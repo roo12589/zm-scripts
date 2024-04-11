@@ -18,27 +18,48 @@
 const scripts = {
     _rc: {
         name: '日常：',
-        list: [
-            '日常活跃1000',
-            '日常爬山v2',
-            '炼狱黄泉路',
-            '导航云游',
-            '极北自动扫荡',
-        ],
+        list: ['日常活跃1000', '日常爬山v2', '炼狱黄泉路', '导航云游'].map(
+            (name) => ({ name: name, gap: 1 })
+        ),
     },
     _rc2: {
         name: '选做日常：',
-        list: ['联盟炼妖挂机', '仙迹扫荡'],
+        list: [
+            { name: '联盟炼妖挂机', gap: 2 },
+            { name: '仙迹扫荡', gap: 3 },
+        ],
     },
     _zc: {
         name: '周常：',
-        list: ['每周竞技', '周登入'],
+        list: [
+            '每周竞技',
+            '周登入',
+            '荣耀',
+            '天选阁',
+            '周悬赏任务',
+            '联盟炼妖商店',
+        ].map((name) => ({
+            name: name,
+            gap: 7,
+        })),
     },
     _qt: {
         name: '其他：',
-        list: ['联盟悬赏辅助v2', '龙虎领取', '活跃兑换', '荣耀'],
+        list: [/*  '龙虎领取',  */ '活跃兑换'].map((name) => ({
+            name: name,
+            gap: 0,
+        })),
+    },
+    _fz: {
+        name: '辅助：',
+        list: ['联盟悬赏辅助v2', '妖兽'].map((name) => ({
+            name: name,
+            gap: 0,
+        })),
     },
 }
+
+scripts._rc.list.push({ name: '极北自动扫荡', gap: 0.5 })
 /*      
 '天庭关卡',
 '关卡',
@@ -57,8 +78,8 @@ const computedUIOption = (key: string, name: string) => ({
     },
 })
 
-const computedScriptOption = (name: string) => ({
-    name: name,
+const computedScriptOption = (sc: { name: string; gap: number | boolean }) => ({
+    name: sc.name,
     value: {
         varType: 'bool',
         varScope: 'script',
@@ -80,9 +101,11 @@ const computedScriptOption = (name: string) => ({
             textAppendRight: {
                 varType: 'expression',
                 valueExp:
-                    "(function () {\r\n        function getDateStr(date) {\r\n            return `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`\r\n        }\r\n        let name = '" +
-                    name +
-                    '\'\r\n        const today = getDateStr(new Date())\r\n        const yesterday = getDateStr(new Date(Date.now() - 24 * 60 * 60 * 1000))\r\n        const yeyesterday = getDateStr(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000))\r\n\r\n\r\n        const statistics = zdjl.getStorage(\'statistics\')\r\n        if (statistics) {\r\n            if (statistics[today] && statistics[today][name]) {\r\n                return "今天"\r\n            }\r\n            if (statistics[yesterday] && statistics[yesterday][name]) {\r\n                return "昨天"\r\n            }\r\n            if (statistics[yeyesterday] && statistics[yeyesterday][name]) {\r\n                return "前天"\r\n            }\r\n        }\r\n        return \'\'\r\n    })()',
+                    "    (function () {\r\n         let name = '" +
+                    sc.name +
+                    "';\r\n          let gap = '" +
+                    sc.gap +
+                    "';\r\n        const statistics = zdjl.getStorage('statistics_2');\r\n        if (statistics && statistics[name]) {\r\n            const scriptStatistic = Object.keys(statistics[name]).sort();\r\n            let lastTime = scriptStatistic[scriptStatistic.length - 1];\r\n            if (!lastTime) return '';\r\n            let lastTimeStr = `${lastTime.slice(0, 4)}-${lastTime.slice(4, 6)}-${lastTime.slice(6, 8)}`;\r\n            // zdjl引擎不兼容 new Date 2023-02-02 00:00:00格式字符串\r\n            const lastDate = new Date(lastTimeStr);\r\n            lastDate.setHours(0, 0, 0, 0);\r\n            const now = new Date();\r\n            console.log('scriptStatistic', scriptStatistic); console.log('lastTime', lastTime); console.log('lastDate', lastDate);\r\n            const differ = new Date(now.getFullYear(), now.getMonth(), now.getDate()) - lastDate.getTime();\r\n            let color = '#ffffff';\r\n            let text;\r\n            if (differ < 24 * 60 * 60 * 1000) {\r\n                text = '今天';\r\n            } else if (differ < 2 * 24 * 60 * 60 * 1000) {\r\n                text = '昨天';\r\n            } else if (differ < 3 * 24 * 60 * 60 * 1000) {\r\n                text = '前天';\r\n            } else {\r\n                text = differ / (24 * 60 * 60 * 1000) + '天前';\r\n            }\r\n\r\n            if (gap && gap < 1) {\r\n                let targetTime = Math.floor(1 / gap);\r\n                let currentTime = statistics[name][lastTime] || 0;\r\n                text = `${currentTime}/${targetTime}次`;\r\n console.log(scriptStatistic,lastTime ,scriptStatistic[lastTime] );               if (currentTime >= targetTime) {\r\n                    color = zdjl.getVar('color_100');\r\n                } else {\r\n                    color = zdjl.getVar('color_0');\r\n                }\r\n            }\r\n            if (gap && gap >= 1) {\r\n                if (differ < gap * 24 * 60 * 60 * 1000) {\r\n                    color = zdjl.getVar('color_100');\r\n                } else {\r\n                    color = zdjl.getVar('color_0');\r\n                }\r\n            }\r\n\r\n            return `#MD<font color=${color}> ${text} </font> `;\r\n        }\r\n        return '';\r\n    })()",
             },
         },
     },
@@ -104,6 +127,11 @@ const qtList: any = [
     computedUIOption('_qt', scripts['_qt'].name),
     ...scripts['_qt'].list.map(computedScriptOption),
 ]
+const fzList = [
+    computedUIOption('_fz', scripts['_fz'].name),
+    ...scripts['_fz'].list.map(computedScriptOption),
+]
+
 qtList.splice(
     1,
     0,
@@ -153,7 +181,7 @@ qtList.push({
         value: '上仙大气',
     },
 })
-const scriptVars = [...rcList, ...rc2List, ...zcList, ...qtList]
+const scriptVars = [...rcList, ...rc2List, ...zcList, ...qtList,...fzList]
 
 const baseVars = [
     {
@@ -189,25 +217,10 @@ const baseVars = [
     {
         name: 'noti',
         value: {
-            varType: 'string',
-            varScope: 'script',
-            showInput: true,
-            showInputLabel: '提示',
-            mustInput: true,
-            rememberInputValue: true,
-            showInputWidthBasis: '25%',
-            showInputContentAlign: 'left',
-            value: '通知声',
-            stringItems: ['无', '电话声', '通知声', '闹铃声'],
-        },
-    },
-    {
-        name: 'vibrator',
-        value: {
             varType: 'bool',
             varScope: 'script',
             showInput: true,
-            showInputLabel: '震动',
+            showInputLabel: '提示',
             mustInput: true,
             rememberInputValue: true,
             showInputWidthBasis: '25%',
@@ -224,4 +237,4 @@ const actionOption = {
     vars: [...baseVars, ...scriptVars],
 }
 // @ts-ignore
-zdjl.runAction(actionOption)
+await zdjl.runActionAsync(actionOption)
