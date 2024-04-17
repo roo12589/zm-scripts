@@ -46,8 +46,18 @@ Object.keys(all).forEach(k => {
 
     // 额外文本 右r
     (function () {
-        //  let name = '"+sc.name+"';
-        //  let gap = '"+sc.gap+"';
+        function getCurrentMonday() {
+            const d = new Date();
+            const date = d.getDate();
+            const day = d.getDay() === 0 ? 7 : d.getDay();
+            const targetMonday = new Date();
+            targetMonday.setDate(date - day + 1);
+            targetMonday.setHours(0, 0, 0, 0);
+            return targetMonday;
+        }
+
+        let name = '"+sc.name+"';
+        let gap = "+sc.gap+";
         const statistics = zdjl.getStorage('statistics_2');
         if (statistics && statistics[name]) {
             const scriptStatistic = Object.keys(statistics[name]).sort();
@@ -64,6 +74,7 @@ Object.keys(all).forEach(k => {
             let text;
             if (differ < 24 * 60 * 60 * 1000) {
                 text = '今天';
+
             } else if (differ < 2 * 24 * 60 * 60 * 1000) {
                 text = '昨天';
             } else if (differ < 3 * 24 * 60 * 60 * 1000) {
@@ -71,18 +82,24 @@ Object.keys(all).forEach(k => {
             } else {
                 text = differ / (24 * 60 * 60 * 1000) + '天前';
             }
-            console.log(scriptStatistic,gap,gap * 24 * 60 * 60 * 1000, differ);
+            console.log(scriptStatistic, gap, gap * 24 * 60 * 60 * 1000, differ);
             if (gap && gap < 1) {
-                let targetTime = Math.floor(1 / gap);
-                let currentTime = statistics[name][lastTime] || 0;
-                text = `${currentTime}/${targetTime}次`;
-                if (currentTime >= targetTime) {
-                    color = zdjl.getVar('color_100');
-                } else {
-                    color = zdjl.getVar('color_0');
+                // 非当天不改变文本 默认置灰
+                color = zdjl.getVar('color_0');
+                if (differ < 24 * 60 * 60 * 1000) {
+                    // 当天运行次数
+                    let targetTime = Math.floor(1 / gap);
+                    let currentTime = statistics[name][lastTime] || 0;
+                    text = `${currentTime}/${targetTime}次`;
+                    if (currentTime >= targetTime) {
+                        color = zdjl.getVar('color_100');
+                    }
                 }
             }
             if (gap && gap >= 1) {
+                const Monday = getCurrentMonday();
+
+
                 if (differ < gap * 24 * 60 * 60 * 1000) {
                     color = zdjl.getVar('color_100');
                 } else {

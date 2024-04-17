@@ -1,3 +1,17 @@
+/**
+ * 4.16
+ * add 极光天照 辅助进图 扫除
+ * refactor 脚本分类结构;部分脚本config预置
+ *
+ * todo
+ * 4.15
+ * 仙迹商店？
+ * 碾压
+ * config schema
+ * 7日 =>本周
+ * 每周首次退出规避联盟动画
+ *
+ */
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -7,65 +21,60 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-/*
-    '_rc',
-             '日常活跃1000',
-    '日常爬山v2', '炼狱黄泉路',
-    '导航云游',   '极北自动扫荡',
-    
-    '_rc2',
-           '联盟炼妖挂机',
-    '仙迹扫荡',
-      '_zc',
-    '每周竞技',   '周登入',
-    '_qt',
-           '天庭关卡',
-    '关卡',       '联盟悬赏辅助v2',
-    '龙虎领取',   '活跃兑换',
-    '荣耀',       'content'
-   */
 var scripts = {
     _rc: {
         name: '日常：',
-        list: ['日常活跃1000', '日常爬山v2', '炼狱黄泉路', '导航云游'].map(function (name) { return ({ name: name, gap: 1 }); }),
+        list: [
+            '日常活跃1000',
+            '日常爬山v2',
+            '炼狱黄泉路',
+            '导航云游',
+            '极光天照',
+        ].map(function (name) { return ({ name: name, gap: 1 }); }),
     },
     _rc2: {
         name: '选做日常：',
         list: [
             { name: '联盟炼妖挂机', gap: 2 },
             { name: '仙迹扫荡', gap: 3 },
+            { name: '战令', gap: 0.5 },
+            { name: '极北自动扫荡', gap: 0.5 },
+            { name: '妖兽', gap: 0.5 },
         ],
     },
     _zc: {
         name: '周常：',
-        list: [
-            '每周竞技',
-            '周登入',
-            '荣耀',
-            '天选阁',
-            '周悬赏任务',
-            '联盟炼妖商店',
-        ].map(function (name) { return ({
+        list: ['每周竞技', '周登入', '荣耀'].map(function (name) { return ({
             name: name,
             gap: 7,
         }); }),
     },
-    _qt: {
-        name: '其他：',
-        list: [/*  '龙虎领取',  */ '活跃兑换'].map(function (name) { return ({
+    _hd: {
+        name: '活动：',
+        list: [
+            /*  '龙虎领取',  */
+            /* '活跃兑换' */
+            '扫除',
+        ].map(function (name) { return ({
             name: name,
             gap: 0,
         }); }),
     },
-    _fz: {
-        name: '辅助：',
-        list: ['联盟悬赏辅助v2', '妖兽'].map(function (name) { return ({
+    _qt: {
+        name: '其他：',
+        list: ['联盟悬赏辅助v2', '辅助进图'].map(function (name) { return ({
+            name: name,
+            gap: 0,
+        }); }),
+    },
+    _td: {
+        name: '待做：',
+        list: ['天选阁', '周悬赏任务', '联盟炼妖商店'].map(function (name) { return ({
             name: name,
             gap: 0,
         }); }),
     },
 };
-scripts._rc.list.push({ name: '极北自动扫荡', gap: 0.5 });
 /*
 '天庭关卡',
 '关卡',
@@ -94,22 +103,13 @@ var computedScriptOption = function (sc) { return ({
         showInputContentAlign: 'left',
         value: false,
         __vars: {
-            // backgroundColor: {
-            //     varType: 'expression',
-            //     varScope: 'script',
-            //     mustInput: true,
-            //     valueExp:
-            //         "    (function () {\r\n        let name = '+" +
-            //         name +
-            //         "+'\r\n        const today = `${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}${new Date().getDate().toString().padStart(2, '0')}`\r\n        const statistics = zdjl.getStorage('statistics')\r\n        if (statistics && statistics[today] && statistics[today][name]) {\r\n            if (statistics[today][name] === 1)\r\n                return zdjl.getVar('color_100')\r\n        }\r\n        return ''\r\n    })()",
-            // },
             textAppendRight: {
                 varType: 'expression',
-                valueExp: "    (function () {\r\n         let name = '" +
+                valueExp: "(function(){let name='" +
                     sc.name +
-                    "';\r\n          let gap = '" +
+                    "';let gap=" +
                     sc.gap +
-                    "';\r\n        const statistics = zdjl.getStorage('statistics_2');\r\n        if (statistics && statistics[name]) {\r\n            const scriptStatistic = Object.keys(statistics[name]).sort();\r\n            let lastTime = scriptStatistic[scriptStatistic.length - 1];\r\n            if (!lastTime) return '';\r\n            let lastTimeStr = `${lastTime.slice(0, 4)}-${lastTime.slice(4, 6)}-${lastTime.slice(6, 8)}`;\r\n            // zdjl引擎不兼容 new Date 2023-02-02 00:00:00格式字符串\r\n            const lastDate = new Date(lastTimeStr);\r\n            lastDate.setHours(0, 0, 0, 0);\r\n            const now = new Date();\r\n            console.log('scriptStatistic', scriptStatistic); console.log('lastTime', lastTime); console.log('lastDate', lastDate);\r\n            const differ = new Date(now.getFullYear(), now.getMonth(), now.getDate()) - lastDate.getTime();\r\n            let color = '#ffffff';\r\n            let text;\r\n            if (differ < 24 * 60 * 60 * 1000) {\r\n                text = '今天';\r\n            } else if (differ < 2 * 24 * 60 * 60 * 1000) {\r\n                text = '昨天';\r\n            } else if (differ < 3 * 24 * 60 * 60 * 1000) {\r\n                text = '前天';\r\n            } else {\r\n                text = differ / (24 * 60 * 60 * 1000) + '天前';\r\n            }\r\n\r\n            if (gap && gap < 1) {\r\n                let targetTime = Math.floor(1 / gap);\r\n                let currentTime = statistics[name][lastTime] || 0;\r\n                text = `${currentTime}/${targetTime}次`;\r\n console.log(scriptStatistic,lastTime ,scriptStatistic[lastTime] );               if (currentTime >= targetTime) {\r\n                    color = zdjl.getVar('color_100');\r\n                } else {\r\n                    color = zdjl.getVar('color_0');\r\n                }\r\n            }\r\n            if (gap && gap >= 1) {\r\n                if (differ < gap * 24 * 60 * 60 * 1000) {\r\n                    color = zdjl.getVar('color_100');\r\n                } else {\r\n                    color = zdjl.getVar('color_0');\r\n                }\r\n            }\r\n\r\n            return `#MD<font color=${color}> ${text} </font> `;\r\n        }\r\n        return '';\r\n    })()",
+                    ";const statistics=zdjl.getStorage('statistics_2');if(statistics&&statistics[name]){const scriptStatistic=Object.keys(statistics[name]).sort();let lastTime=scriptStatistic[scriptStatistic.length-1];if(!lastTime)return'';let lastTimeStr=`${lastTime.slice(0,4)}-${lastTime.slice(4,6)}-${lastTime.slice(6,8)}`;const lastDate=new Date(lastTimeStr);lastDate.setHours(0,0,0,0);const now=new Date();console.log('scriptStatistic',scriptStatistic);console.log('lastTime',lastTime);console.log('lastDate',lastDate);const differ=new Date(now.getFullYear(),now.getMonth(),now.getDate())-lastDate.getTime();let color='#ffffff';let text;if(differ<24*60*60*1000){text='今天';}else if(differ<2*24*60*60*1000){text='昨天';}else if(differ<3*24*60*60*1000){text='前天';}else{text=differ/(24*60*60*1000)+'天前';}console.log(scriptStatistic,gap,gap*24*60*60*1000,differ);if(gap&&gap<1){color=zdjl.getVar('color_0');if(differ<24*60*60*1000){let targetTime=Math.floor(1/gap);let currentTime=statistics[name][lastTime]||0;text=`${currentTime}/${targetTime}次`;if(currentTime>=targetTime){color=zdjl.getVar('color_100');}}}if(gap&&gap>=1){if(differ<gap*24*60*60*1000){color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}}return`#MD<font color=${color}>${text}</font>`;}return'';})()",
             },
         },
     },
@@ -123,12 +123,15 @@ var rc2List = __spreadArray([
 var zcList = __spreadArray([
     computedUIOption('_zc', scripts['_zc'].name)
 ], scripts['_zc'].list.map(computedScriptOption), true);
+var hdList = __spreadArray([
+    computedUIOption('_hd', scripts['_hd'].name)
+], scripts['_hd'].list.map(computedScriptOption), true);
 var qtList = __spreadArray([
     computedUIOption('_qt', scripts['_qt'].name)
 ], scripts['_qt'].list.map(computedScriptOption), true);
-var fzList = __spreadArray([
-    computedUIOption('_fz', scripts['_fz'].name)
-], scripts['_fz'].list.map(computedScriptOption), true);
+var tdList = __spreadArray([
+    computedUIOption('_td', scripts['_td'].name)
+], scripts['_td'].list.map(computedScriptOption), true);
 qtList.splice(1, 0, {
     name: '天庭关卡',
     value: {
@@ -172,7 +175,36 @@ qtList.push({
         value: '上仙大气',
     },
 });
-var scriptVars = __spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray([], rcList, true), rc2List, true), zcList, true), qtList, true), fzList, true);
+tdList.push({
+    name: 'yunyouSlot',
+    value: {
+        varType: 'number',
+        varScope: 'script',
+        showInput: true,
+        showInputLabel: '云游槽位',
+        mustInput: true,
+        showInputWidthBasis: '25%',
+        showInputContentAlign: 'left',
+        syncValueOnChange: true,
+        number: 2,
+        selectItems: [1, 2, 3],
+    },
+}, {
+    name: 'lianmengPurchaseStrategy',
+    value: {
+        varType: 'string',
+        varScope: 'script',
+        showInput: true,
+        showInputLabel: '炼妖购买策略',
+        mustInput: true,
+        showInputWidthBasis: '50%',
+        showInputContentAlign: 'left',
+        syncValueOnChange: true,
+        string: '二级丹',
+        stringItems: ['二级丹', '启灵符'],
+    },
+});
+var scriptVars = __spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray([], rcList, true), rc2List, true), zcList, true), hdList, true), qtList, true), tdList, true);
 var baseVars = [
     {
         name: 'startSlot',
