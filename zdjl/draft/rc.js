@@ -97,13 +97,22 @@ Object.keys(all).forEach(k => {
                 }
             }
             if (gap && gap >= 1) {
-                const Monday = getCurrentMonday();
-
 
                 if (differ < gap * 24 * 60 * 60 * 1000) {
                     color = zdjl.getVar('color_100');
                 } else {
                     color = zdjl.getVar('color_0');
+                }
+
+                if (gap === 7) {
+                    const Monday = getCurrentMonday();
+                    if (lastDate >= Monday) {
+                        text = '完成'; color = zdjl.getVar('color_100');
+                    } else {
+                        color = zdjl.getVar('color_0');
+
+                    }
+
                 }
             }
 
