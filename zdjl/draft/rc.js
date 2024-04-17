@@ -32,7 +32,8 @@ Object.keys(all).forEach(k => {
 
     (function () {
         const scripts = zdjl.getVar('scripts');
-        const today = `${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}${new Date().getDate().toString().padStart(2, '0')}`;
+        const now = new Date(new Date() - 5 * 60 * 60 * 1000);
+        const today = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}`;
         const statistics = zdjl.getStorage('statistics_2') || {};
         for (let i = 0; i < scripts.length; i++) {
             const script = scripts[i];
