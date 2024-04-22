@@ -1,3 +1,3 @@
-const autojsUtils = require('./modules/autojs-utils');
+const myHome = require('./modules/home');
 
-autojsUtils.test();
+myHome.main();

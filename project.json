@@ -9,12 +9,12 @@
         "stableMode": false
     },
     "main": "main.js",
-    "name": "%ProjectName%",
+    "name": "zm-daily",
     "optimization": {
         "removeOpenCv": false,
         "unusedResources": false
     },
-    "packageName": "org.example.my_project",
+    "packageName": "org.zm.zm_daily",
     "scripts": {},
     "versionCode": 1,
     "versionName": "1.0.0",
