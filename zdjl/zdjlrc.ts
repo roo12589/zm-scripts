@@ -6,6 +6,10 @@
  * 7日 =>本周
  * 存储时间 修正5小时
  * 进人游戏zjs 每日仅一次活动弹窗
+ * 4.24
+ * add 天选阁
+ * fix configScope global
+ * add kunlunStrategy
  *
  *
  * todo
@@ -36,7 +40,8 @@ const scripts = {
             { name: '仙迹扫荡', gap: 3 },
             { name: '战令', gap: 0.5 },
             { name: '极北自动扫荡', gap: 0.5 },
-            { name: '妖兽', gap: 0.5 },
+            { name: '妖兽', gap: 0 },
+            { name: '天选阁', gap: 0 },
         ],
     },
     _zc: {
@@ -51,7 +56,7 @@ const scripts = {
         list: [
             /*  '龙虎领取',  */
             /* '活跃兑换' */
-            '扫除',
+            /* '扫除', */
         ].map((name) => ({
             name: name,
             gap: 0,
@@ -66,7 +71,7 @@ const scripts = {
     },
     _td: {
         name: '待做：',
-        list: ['天选阁', '周悬赏任务', '联盟炼妖商店'].map((name) => ({
+        list: ['周悬赏任务'].map((name) => ({
             name: name,
             gap: 0,
         })),
@@ -194,7 +199,7 @@ tdList.push(
         name: 'yunyouSlot',
         value: {
             varType: 'number',
-            varScope: 'script',
+            varScope: 'global',
             showInput: true,
             showInputLabel: '云游槽位',
             mustInput: true,
@@ -209,7 +214,7 @@ tdList.push(
         name: 'lianmengPurchaseStrategy',
         value: {
             varType: 'string',
-            varScope: 'script',
+            varScope: 'global',
             showInput: true,
             showInputLabel: '炼妖购买策略',
             mustInput: true,
@@ -218,6 +223,21 @@ tdList.push(
             syncValueOnChange: true,
             string: '二级丹',
             stringItems: ['二级丹', '启灵符'],
+        },
+    },
+    {
+        name: 'kunlunStrategy',
+        value: {
+            varType: 'string',
+            varScope: 'global',
+            showInput: true,
+            showInputLabel: '昆仑山策略',
+            mustInput: true,
+            showInputWidthBasis: '50%',
+            showInputContentAlign: 'left',
+            syncValueOnChange: true,
+            string: '半自动',
+            stringItems: ['半自动', '全自动'],
         },
     }
 )
