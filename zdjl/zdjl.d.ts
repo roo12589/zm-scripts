@@ -5,4 +5,15 @@ declare module zdjl {
     function setStorage(key: string, value: any): void
     function getStorage(key: string): any
     function runAction(actionOption: any): void
+    function findLocation(locationOption: any): Location
+    function recognitionScreen(recognitionOption: any): string
+}
+
+interface Location {
+    x: number
+    y: number
+    x_100: number
+    y_100: number
+    x_dp: number
+    y_dp: number
 }

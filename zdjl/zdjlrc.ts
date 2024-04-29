@@ -70,7 +70,7 @@ const scripts = {
         })),
     },
     _td: {
-        name: '待做：',
+        name: '配置及待做：',
         list: ['周悬赏任务'].map((name) => ({
             name: name,
             gap: 0,
