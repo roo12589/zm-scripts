@@ -54,13 +54,12 @@ const scripts = {
     _hd: {
         name: '活动：',
         list: [
-            /*  '龙虎领取',  */
-            /* '活跃兑换' */
-            /* '扫除', */
-        ].map((name) => ({
-            name: name,
-            gap: 0,
-        })),
+            //  '龙虎领取',
+            { name: '活跃兑换', gap: 1 },
+            { name: '灵能', gap: 0.5 },
+            { name: '活动合集', gap: 1 },
+            { name: '邪羊副本', gap: 1 },
+        ],
     },
     _qt: {
         name: '其他：',
