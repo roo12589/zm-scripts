@@ -45,10 +45,24 @@
                 slideTimes: 1
             },
             {
+                name: "南天王殿-精英",
+                img: "img南天王殿",
+                slideDirection: "up",
+                stageIndex: 1,
+                slideTimes: 1
+            },
+            {
+                name: "西天王殿-精英",
+                img: "img西天王殿",
+                slideDirection: "up",
+                stageIndex: 1,
+                slideTimes: 1
+            },
+            {
                 name: "北天王殿",
                 img: "img北天王殿",
                 slideDirection: "up",
-                stageIndex: 2,
+                stageIndex: 1,
                 slideTimes: 1
             },
             {
@@ -61,6 +75,13 @@
             {
                 name: "朝会殿",
                 img: "img朝会殿",
+                slideDirection: "up",
+                stageIndex: 1,
+                slideTimes: 2
+            },
+            {
+                name: "凌霄宝殿",
+                img: "img凌霄宝殿",
                 slideDirection: "up",
                 stageIndex: 1,
                 slideTimes: 2
