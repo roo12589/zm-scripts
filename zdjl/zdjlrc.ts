@@ -21,44 +21,46 @@
  * 每周首次退出规避联盟动画
  *
  */
-
-const scripts = {
+// @ts-ignore
+const scripts: Record<string, { name: string; list: Script[] }> = {
     _rc: {
         name: '日常：',
         list: [
-            '日常活跃1000',
-            '日常爬山v2',
-            '炼狱黄泉路',
-            '云游',
-            '极光天照',
-        ].map((name) => ({ name: name, gap: 1 })),
+            { name: '日常活跃1000', gap: 1, order: 0 },
+            { name: '日常爬山v2', gap: 1, order: 0 },
+            { name: '炼狱黄泉路', gap: 1, order: 10 },
+            { name: '云游', gap: 1, order: 1000 },
+            { name: '极光天照', gap: 1, order: -100 },
+            { name: '战力碾压', gap: 1, order: 0 },
+        ],
     },
     _rc2: {
         name: '选做日常：',
         list: [
-            { name: '联盟炼妖挂机', gap: 2 },
-            { name: '仙迹扫荡', gap: 3 },
-            { name: '战令', gap: 0.5 },
-            { name: '极北自动扫荡', gap: 0.5 },
-            { name: '妖兽', gap: 0 },
-            { name: '天选阁', gap: 0 },
+            { name: '联盟炼妖挂机', gap: 2, order: -1 },
+            { name: '仙迹扫荡', gap: 3, order: 0 },
+            { name: '战令', gap: 0.5, order: 1000 },
+            { name: '极北自动扫荡', gap: 0.5, order: -10 },
+            { name: '妖兽', gap: 0, order: 1000 },
+            { name: '天选阁', gap: 0, order: 0 },
         ],
     },
     _zc: {
         name: '周常：',
-        list: ['每周竞技', '周登入', '荣耀'].map((name) => ({
-            name: name,
-            gap: 7,
-        })),
+        list: [
+            { name: '每周竞技', gap: 7, order: 0 },
+            { name: '周登入', gap: 7, order: 0 },
+            { name: '荣耀', gap: 7, order: 0 },
+        ],
     },
     _hd: {
         name: '活动：',
         list: [
             //  '龙虎领取',
-            { name: '活跃兑换', gap: 1 },
-            { name: '灵能', gap: 0.5 },
-            { name: '活动合集', gap: 1 },
-            { name: '邪羊副本', gap: 1 },
+            { name: '活跃兑换', gap: 1, order: 100 },
+            { name: '灵能', gap: 0.5, order: 1000 },
+            { name: '活动合集', gap: 1, order: 100 },
+            { name: '邪羊副本', gap: 1, order: 1 },
         ],
     },
     _qt: {
@@ -77,6 +79,14 @@ const scripts = {
     },
 }
 
+const scriptOrderMap = {}
+Object.keys(scripts).forEach((key) => {
+    scripts[key].list.forEach((sc) => {
+        scriptOrderMap[sc.name] = sc.order || 0
+    })
+})
+// @ts-ignore
+zdjl.setStorage('scriptOrderMap', scriptOrderMap)
 /*      
 '天庭关卡',
 '关卡',
@@ -94,8 +104,8 @@ const computedUIOption = (key: string, name: string) => ({
         textColor: '#f2ff00',
     },
 })
-
-const computedScriptOption = (sc: { name: string; gap: number | boolean }) => ({
+//@ts-ignore
+const computedScriptOption = (sc: Script) => ({
     name: sc.name,
     value: {
         varType: 'bool',
@@ -177,7 +187,7 @@ qtList.splice(
                     varScope: 'script',
                     mustInput: true,
                     valueExp:
-                        '[ "神兽森林", "九重天", "天宫道", "南天门", "南天王殿", "西天王殿", "北天王殿", "彩虹楼", "朝会殿", "凌霄宝殿","青龙秘境","龙宫","玲珑塔-李天王","玲珑塔-哪吒","玲珑塔-雷震子",]\n',
+                        '[ "神兽森林", "九重天-未完成", "天宫道", "南天门", "南天王殿", "西天王殿",  "南天王殿-精英", "西天王殿-精英", "北天王殿", "彩虹楼", "朝会殿", "凌霄宝殿","青龙秘境","龙宫","玲珑塔-李天王","玲珑塔-哪吒","玲珑塔-雷震子",]\n',
                 },
             },
         },

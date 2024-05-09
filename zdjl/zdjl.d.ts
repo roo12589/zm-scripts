@@ -17,3 +17,9 @@ interface Location {
     x_dp: number
     y_dp: number
 }
+
+declare interface Script{
+    name:string
+    gap:number
+    order?:number
+}

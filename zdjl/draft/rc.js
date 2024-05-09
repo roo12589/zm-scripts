@@ -136,3 +136,11 @@ Object.keys(all).forEach(k => {
 for (let i in 10) {
     console.log("i", i);
 }
+
+(function(){
+   const scriptOrderMap =  zdjl.getStorage('scriptOrderMap')
+   filteredArr.sort((a, b) => {
+       return scriptOrderMap[b] - scriptOrderMap[a]
+   })
+
+})()
