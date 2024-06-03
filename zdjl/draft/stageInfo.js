@@ -121,7 +121,62 @@
                 stageIndex: 4,
                 slideTimes: 1
             },
+            {
+                name: "玲珑塔-土行孙",
+                img: "img玲珑塔",
+                slideDirection: "down",
+                stageNextPage: true,
+                stageIndex: 3,
+                slideTimes: 1
+            },
+            {
+                name: "转轮殿-精英",
+                img: "img混沌之门",
+                slideDirection: "down",
+                stageIndex: 0,
+                slideTimes: 2,
+                type: 'special',
+                position: '66.8% 58.5%'
+            },
+            {
+                name: "牛魔殿-精英",
+                img: "img混沌之门",
+                slideDirection: "down",
+                stageIndex: 0,
+                slideTimes: 2,
+                type: 'special',
+                position: '66.8% 84.5%'
+            },
+            {
+                name: "御马监",
+                img: "img北天王殿",
+                slideDirection: "up",
+                stageIndex: 3,
+                slideTimes: 1
+            },
+            {
+                name: "蟠桃园",
+                img: "img天宫道",
+                slideDirection: false,
+                stageIndex: 2,
+                slideTimes: 1
+            },
+            {
+                name: "罗刹宫-惊鸿殿",
+                img: "img罗刹宫殿",
+                slideDirection: "down",
+                stageIndex: 1,
+                slideTimes: 3
+            },
+            {
+                name: "罗刹宫-月夜宫",
+                img: "img罗刹宫殿",
+                slideDirection: "down",
+                stageIndex: 2,
+                slideTimes: 3
+            },
         ];
 
+    console.log("stageList", stageList.map(s => s.name));
     return stageList;
 })();
