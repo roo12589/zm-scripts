@@ -6,7 +6,15 @@ declare module zdjl {
     function getStorage(key: string): any
     function runAction(actionOption: any): void
     function findLocation(locationOption: any): Location
-    function recognitionScreen(recognitionOption: any): string
+    function recognitionScreen(recognitionOption: any): string|OCROriginData[]
+}
+
+interface OCROriginData{
+    text:string
+    left:number
+    top:number
+    right:number
+    bottom:number
 }
 
 interface Location {

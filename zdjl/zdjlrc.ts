@@ -29,9 +29,8 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '日常活跃1000', gap: 1, order: 0 },
             { name: '日常爬山v2', gap: 1, order: 0 },
             { name: '炼狱黄泉路', gap: 1, order: 10 },
-            { name: '云游', gap: 1, order: 1000 },
             { name: '极光天照', gap: 1, order: -100 },
-            { name: '战力碾压', gap: 1, order: 0 },
+            { name: '一键碾压', gap: 1, order: 0 },
         ],
     },
     _rc2: {
@@ -43,6 +42,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '极北自动扫荡', gap: 0.5, order: -10 },
             { name: '妖兽', gap: 0, order: 1000 },
             { name: '天选阁', gap: 0, order: 0 },
+            { name: '云游', gap: 1, order: 1000 },
         ],
     },
     _zc: {
@@ -56,11 +56,14 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     _hd: {
         name: '活动：',
         list: [
-            //  '龙虎领取',
             { name: '活跃兑换', gap: 1, order: 100 },
-            { name: '灵能', gap: 0.5, order: 1000 },
-            { name: '活动合集', gap: 1, order: 100 },
-            { name: '邪羊副本', gap: 1, order: 1 },
+            //{ name: '灵能', gap: 0.5, order: 1000 },
+            //    { name: '活动合集', gap: 1, order: 100 },
+            //{ name: '邪羊副本', gap: 1, order: 1 },
+            //    { name: '决斗场', gap: 1, order: 1000 },
+            //    { name: '龙虎领取', gap: 1, order: 100 },
+            //     { name: '扫除', gap: 1, order: 10 },
+            //{ name: '邪羊领取', gap: 1, order: 10 },
         ],
     },
     _qt: {
@@ -248,6 +251,21 @@ tdList.push(
             string: '半自动',
             stringItems: ['半自动', '全自动'],
         },
+    },
+    {
+        name: 'lianmengRewardStrategy',
+        value: {
+            varType: 'string',
+            varScope: 'global',
+            showInput: true,
+            showInputLabel: '悬赏策略',
+            mustInput: true,
+            showInputWidthBasis: '50%',
+            showInputContentAlign: 'left',
+            syncValueOnChange: true,
+            string: '全自动',
+            stringItems: ['半自动', '全自动'],
+        },
     }
 )
 
@@ -259,7 +277,6 @@ const scriptVars = [
     ...qtList,
     ...tdList,
 ]
-
 const baseVars = [
     {
         name: 'startSlot',
