@@ -130,12 +130,15 @@
  */
     let tasks = [
         {
+            index:1,
             originData: task1,
         },
         {
+            index:2,
             originData: task2,
         },
         {
+            index:3,
             originData: task3,
         },
         /* , task4 */
@@ -144,6 +147,7 @@
         originData: OCROriginData[]
         material?: Material
         reward?: number
+        index:number
     }[]
     tasks.forEach((task, index) => {
         for (let data of task.originData) {
@@ -162,10 +166,12 @@
     const filteredTasks = tasks
         .filter((t) => t.material?.achievable)
         .sort((a, b) => b.material!.order - a.material!.order)
-    console.log('tasks', filteredTasks)
+    console.log('filteredTasks', filteredTasks)
     const textPosition = filteredTasks[0]?.originData.find(
         (t) => t.text === '提交'
     )
+    const taskIndex = filteredTasks[0].index
+    zdjl.setVar('taskIndex',taskIndex)
     if (textPosition) {
         zdjl.setVar('textPosition', textPosition.left + ',' + textPosition.top)
     } else {
