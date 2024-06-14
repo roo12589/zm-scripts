@@ -140,27 +140,27 @@ const computedScriptOption = (sc: Script) => ({
     },
 })
 
-const rcList = [
+const rcList: VarOption[] = [
     computedUIOption('_rc', scripts['_rc'].name),
     ...scripts['_rc'].list.map(computedScriptOption),
 ]
-const rc2List = [
+const rc2List: VarOption[] = [
     computedUIOption('_rc2', scripts['_rc2'].name),
     ...scripts['_rc2'].list.map(computedScriptOption),
 ]
-const zcList = [
+const zcList: VarOption[] = [
     computedUIOption('_zc', scripts['_zc'].name),
     ...scripts['_zc'].list.map(computedScriptOption),
 ]
-const hdList = [
+const hdList: VarOption[] = [
     computedUIOption('_hd', scripts['_hd'].name),
     ...scripts['_hd'].list.map(computedScriptOption),
 ]
-const qtList: any[] = [
+const qtList: VarOption[] = [
     computedUIOption('_qt', scripts['_qt'].name),
     ...scripts['_qt'].list.map(computedScriptOption),
 ]
-const tdList: any[] = [
+const tdList: VarOption[] = [
     computedUIOption('_td', scripts['_td'].name),
     ...scripts['_td'].list.map(computedScriptOption),
 ]
@@ -210,6 +210,7 @@ qtList.push({
         varType: 'string',
         varScope: 'global',
         mustInput: false,
+        showInput: true,
         showInputContentAlign: 'left',
         value: '上仙大气',
     },
