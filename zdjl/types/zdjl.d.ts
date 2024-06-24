@@ -371,7 +371,7 @@ namespace zdjl {
     /**
      * 获得一个作用域下的所有变量值
      */
-    function getVars(scope?: string): any
+    function getVars(scope?: string): Record<string, any>
 
     /**
      * 键盘按下

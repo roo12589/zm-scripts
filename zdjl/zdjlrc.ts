@@ -31,6 +31,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '炼狱黄泉路', gap: 1, order: 10 },
             { name: '极光天照', gap: 1, order: -100 },
             { name: '一键碾压', gap: 1, order: 0 },
+            { name: '扫蛋', gap: 1, order: 100 },
         ],
     },
     _rc2: {
@@ -40,9 +41,27 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '仙迹扫荡', gap: 3, order: 0 },
             { name: '战令', gap: 0.5, order: 1000 },
             { name: '极北自动扫荡', gap: 0.5, order: -10 },
+
+            { name: '仙迹商店', gap: 1, order: 100 },
+            { name: '联盟任务', gap: 1, order: 10 },
             { name: '妖兽', gap: 0, order: 1000 },
             { name: '天选阁', gap: 0, order: 0 },
-            { name: '云游', gap: 1, order: 1000 },
+        ],
+    },
+    _hd: {
+        name: '活动：',
+        list: [
+            // { name: '活跃兑换', gap: 1, order: 100 },
+            // { name: '机缘令兑换', gap: 1, order: 100 },
+            // { name: '食粽果盘', gap: 1, order: 100 },
+
+            // { name: '灵能', gap: 0.5, order: 1000 },
+            // { name: '活动合集', gap: 1, order: 100 },
+            // { name: '邪羊副本', gap: 1, order: 1 },
+            { name: '决斗场', gap: 1, order: 1000 },
+            { name: '龙虎领取', gap: 1, order: 100 },
+            // { name: '扫除', gap: 1, order: 10 },
+            // { name: '邪羊领取', gap: 1, order: 10 },
         ],
     },
     _zc: {
@@ -53,33 +72,17 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '荣耀', gap: 7, order: 0 },
         ],
     },
-    _hd: {
-        name: '活动：',
-        list: [
-            { name: '活跃兑换', gap: 1, order: 100 },
-            { name: '机缘令兑换', gap: 1, order: 100 },
-            { name: '食粽果盘', gap: 1, order: 100 },
-            { name: '龙宫', gap: 1, order: 100 },
-            { name: '仙女消费', gap: 1, order: 1000 },
-            { name: '扫蛋', gap: 1, order: 100 },
-            { name: '领取邮件', gap: 1, order: 1000 },
-            { name: '真灵装备', gap: 1, order: 999 },
-            { name: '联盟任务', gap: 1, order: 10 },
-            //{ name: '灵能', gap: 0.5, order: 1000 },
-            //    { name: '活动合集', gap: 1, order: 100 },
-            //{ name: '邪羊副本', gap: 1, order: 1 },
-            //    { name: '决斗场', gap: 1, order: 1000 },
-            //    { name: '龙虎领取', gap: 1, order: 100 },
-            //     { name: '扫除', gap: 1, order: 10 },
-            //{ name: '邪羊领取', gap: 1, order: 10 },
-        ],
-    },
     _qt: {
         name: '其他：',
-        list: ['联盟悬赏辅助v2', '辅助进图'].map((name) => ({
-            name: name,
-            gap: 0,
-        })),
+        list: [
+            { name: '辅助进图', gap: 0, order: 0 },
+            { name: '联盟悬赏辅助', gap: 0, order: 0 },
+            { name: '云游', gap: 0, order: 1000 },
+            { name: '仙女消费', gap: 0, order: 998 },
+            { name: '领取邮件', gap: 0, order: 1000 },
+            { name: '真灵装备', gap: 0, order: 999 },
+            { name: '龙宫', gap: 0, order: 100 },
+        ],
     },
     _td: {
         name: '配置及待做：',
@@ -90,7 +93,9 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     },
 }
 
-const scriptOrderMap = {}
+const scriptOrderMap = {
+    天庭关卡: 101,
+}
 Object.keys(scripts).forEach((key) => {
     scripts[key].list.forEach((sc) => {
         scriptOrderMap[sc.name] = sc.order || 0
@@ -125,7 +130,7 @@ const computedScriptOption = (sc: Script) => ({
         mustInput: true,
         showInputWidthBasis: '50%',
         showInputContentAlign: 'left',
-        value: false,
+        value: zdjl.getVar('config')?.[sc.name] || false,
         __vars: {
             textAppendRight: {
                 varType: 'expression',
@@ -204,7 +209,7 @@ qtList.splice(
         },
     }
 )
-qtList.push({
+/* qtList.push({
     name: 'content',
     value: {
         varType: 'string',
@@ -214,7 +219,7 @@ qtList.push({
         showInputContentAlign: 'left',
         value: '上仙大气',
     },
-})
+}) */
 tdList.push(
     {
         name: 'yunyouSlot',
@@ -282,8 +287,8 @@ tdList.push(
 const scriptVars = [
     ...rcList,
     ...rc2List,
-    ...zcList,
     ...hdList,
+    ...zcList,
     ...qtList,
     ...tdList,
 ]
