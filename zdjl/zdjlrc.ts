@@ -130,7 +130,8 @@ const computedScriptOption = (sc: Script) => ({
         mustInput: true,
         showInputWidthBasis: '50%',
         showInputContentAlign: 'left',
-        value: zdjl.getVar('config')?.[sc.name] || false,
+        syncValueOnChange: true,
+        value: zdjl.getVar(sc.name) || false,
         __vars: {
             textAppendRight: {
                 varType: 'expression',
@@ -335,6 +336,96 @@ const baseVars = [
             showInputWidthBasis: '25%',
             showInputContentAlign: 'left',
             value: true,
+        },
+    },
+
+    {
+        name: 'curUserConfigName',
+        value: {
+            varType: 'string',
+            varScope: 'script',
+            showInput: true,
+            showInputLabel: '读取配置',
+            mustInput: true,
+            rememberInputValue: true,
+            showInputWidthBasis: '50%',
+            syncValueOnChange: true,
+            __vars: {
+                stringItems: {
+                    varType: 'expression',
+                    valueExp:
+                        "Object.keys(zdjl.getStorage('userConfigMap') || {'否':{}})",
+                },
+            },
+        },
+    },
+    {
+        name: '_btn_confirm',
+        value: {
+            varType: 'ui_button',
+            varScope: 'script',
+            showInput: true,
+            mustInput: true,
+            showInputWidthBasis: '25%',
+            buttonText: '确认',
+            action: {
+                type: '运行JS代码',
+                delayUnit: 1,
+                jsCode: 'let userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\nconsole.log("get---userConfigMap",userConfigMap);let curUserConfigName = zdjl.getVar(\'curUserConfigName\') || \'默认\'\r\n\r\nlet curConfigScriptVars = userConfigMap[curUserConfigName].scriptVars\r\nlet curConfigGlobalVars = userConfigMap[curUserConfigName].globalVars\r\n\r\nfor (let key in Object.keys(curConfigGlobalVars)) {\r\n    if (curConfigGlobalVars.hasOwnProperty(key) && !key.startsWith(\'__\')) {\r\n        zdjl.setVar(key, curConfigGlobalVars[key], \'global\')\r\n    }\r\n}\r\nfor (let key in Object.keys(curConfigScriptVars)) {\r\n    if (curConfigScriptVars.hasOwnProperty(key) && !key.startsWith(\'__\')) {\r\n        zdjl.setVar(key, curConfigScriptVars[key])\r\n    }\r\n}\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
+            },
+            closeDialogOnAction: false,
+        },
+    },
+    {
+        name: '_btn_more',
+        value: {
+            varType: 'ui_button',
+            varScope: 'script',
+            showInput: true,
+            mustInput: true,
+            showInputWidthBasis: '25%',
+            buttonText: '更多',
+            action: {
+                type: '运行多个动作',
+                scriptSet: [
+                    {
+                        type: '设置变量',
+                        delayUnit: 1,
+                        vars: [
+                            {
+                                name: 'saveUserConfigName',
+                                value: {
+                                    varType: 'string',
+                                    varScope: 'script',
+                                    showInput: true,
+                                    showInputLabel: '保存到配置',
+                                    mustInput: true,
+                                    value: '配置1',
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        type: '运行JS代码',
+                        jsCode: "const scriptVars = zdjl.getVars()\r\nconst globalVars = zdjl.getVars('global')\r\nlet saveUserConfigName = zdjl.getVar('saveUserConfigName') || '默认'\r\nlet curUserConfig = {\r\n    scriptVars,\r\n    globalVars,\r\n}\r\nlet userConfigMap = zdjl.getStorage('userConfigMap') || {}\r\nuserConfigMap[saveUserConfigName] = curUserConfig\r\n\r\nconsole.log('set---userConfigMap',userConfigMap);zdjl.setStorage('userConfigMap', userConfigMap)",
+                    },
+                ],
+                scriptCallbacks: {
+                    afterExecFail: {
+                        type: '设置变量',
+                        vars: [
+                            {
+                                name: '_cancel',
+                                value: {
+                                    varType: 'string',
+                                    value: "''",
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+            closeDialogOnAction: false,
         },
     },
 ]

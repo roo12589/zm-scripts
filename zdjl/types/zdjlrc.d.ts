@@ -64,3 +64,12 @@ interface ConfigOption {
         }
     }
 }
+
+/**
+ * 用户配置，内存脚本变量
+ */
+interface UserConfigValue {
+    scriptVars: Record<string, any>
+    globalVars: Record<string, any>
+}
+type UserConfigMapObj = Record<string, UserConfigValue>
