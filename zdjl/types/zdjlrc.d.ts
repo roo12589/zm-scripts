@@ -2,6 +2,7 @@ interface Script {
     name: string
     gap: number
     order?: number
+    tab?: string
 }
 type VarOption = UIOption | ScriptOption | ConfigOption
 

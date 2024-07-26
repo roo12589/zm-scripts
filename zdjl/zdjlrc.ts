@@ -21,6 +21,7 @@
  * 每周首次退出规避联盟动画
  *
  */
+
 // @ts-ignore
 const scripts: Record<string, { name: string; list: Script[] }> = {
     _rc: {
@@ -74,15 +75,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     },
     _qt: {
         name: '其他：',
-        list: [
-            { name: '辅助进图', gap: 0, order: 0 },
-            { name: '联盟悬赏辅助', gap: 0, order: 0 },
-            { name: '云游', gap: 0, order: 1000 },
-            { name: '仙女消费', gap: 0, order: 998 },
-            { name: '领取邮件', gap: 0, order: 1000 },
-            { name: '真灵装备', gap: 0, order: 999 },
-            { name: '龙宫', gap: 0, order: 100 },
-        ],
+        list: [{ name: '祝福', gap: 0, order: 100 }],
     },
     _td: {
         name: '配置及待做：',
@@ -91,7 +84,39 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             gap: 0,
         })),
     },
+    _otherTab: {
+        name: '_',
+        list: [
+            { name: '辅助进图', gap: 0, order: 0 },
+            { name: '联盟悬赏辅助', gap: 0, order: 0 },
+            { name: '云游', gap: 0, order: 1000 },
+            { name: '仙女消费', gap: 0, order: 998 },
+            { name: '领取邮件', gap: 0, order: 1000 },
+            { name: '真灵装备', gap: 0, order: 999 },
+            { name: '极北出售', gap: 0, order: 99 },
+            { name: '龙宫', gap: 0, order: 100 },
+        ].map((sc) => ({ ...sc, tab: 'fzTab' })),
+    },
 }
+const tabs: { name: string; key: string }[] = [
+    { name: '首页', key: 'main' },
+    { name: '辅助', key: 'fz' },
+]
+tabs.forEach(({ name, key }) => {
+    zdjl.setVar('_tab_btn_' + key, {
+        varType: 'ui_button',
+        varScope: 'script',
+        mustInput: true,
+        showInput: false,
+        buttonText: '_',
+        action: {
+            type: '运行JS代码',
+            jsCode: `zdjl.setVar('curTab','${key}Tab')`,
+            delay: '0',
+        },
+        closeDialogOnAction: false,
+    })
+})
 
 const scriptOrderMap = {
     天庭关卡: 101,
@@ -118,6 +143,13 @@ const computedUIOption = (key: string, name: string) => ({
         textContent: name,
         textSize: 13,
         textColor: '#f2ff00',
+        showInputHiddenView: true,
+        __vars:{
+            showInputHiddenView: {
+                varType: 'expression',
+                valueExp: `curTab !== 'mainTab'`,
+            },
+        }
     },
 })
 //@ts-ignore
@@ -132,6 +164,7 @@ const computedScriptOption = (sc: Script) => ({
         showInputContentAlign: 'left',
         syncValueOnChange: true,
         value: zdjl.getVar(sc.name) || false,
+        showInputHiddenView: true,
         __vars: {
             textAppendRight: {
                 varType: 'expression',
@@ -141,6 +174,10 @@ const computedScriptOption = (sc: Script) => ({
                     "';let gap=" +
                     sc.gap +
                     ";const statistics=zdjl.getStorage('statistics_2');if(statistics&&statistics[name]){const scriptStatistic=Object.keys(statistics[name]).sort();let lastTime=scriptStatistic[scriptStatistic.length-1];if(!lastTime)return'';let lastTimeStr=`${lastTime.slice(0,4)}-${lastTime.slice(4,6)}-${lastTime.slice(6,8)}`;const lastDate=new Date(lastTimeStr);lastDate.setHours(0,0,0,0);const now=new Date();console.log('scriptStatistic',scriptStatistic);console.log('lastTime',lastTime);console.log('lastDate',lastDate);const differ=new Date(now.getFullYear(),now.getMonth(),now.getDate())-lastDate.getTime();let color='#ffffff';let text;if(differ<24*60*60*1000){text='今天';}else if(differ<2*24*60*60*1000){text='昨天';}else if(differ<3*24*60*60*1000){text='前天';}else{text=differ/(24*60*60*1000)+'天前';}console.log(scriptStatistic,gap,gap*24*60*60*1000,differ);if(gap&&gap<1){color=zdjl.getVar('color_0');if(differ<24*60*60*1000){let targetTime=Math.floor(1/gap);let currentTime=statistics[name][lastTime]||0;text=`${currentTime}/${targetTime}次`;if(currentTime>=targetTime){color=zdjl.getVar('color_100');}}}if(gap&&gap>=1){if(differ<gap*24*60*60*1000){color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}if(gap===7){const Monday=getCurrentMonday();if(lastDate>=Monday){text='完成';color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}}}return`#MD<font color=${color}>${text}</font>`;}return'';})()",
+            },
+            showInputHiddenView: {
+                varType: 'expression',
+                valueExp: `curTab !== '${sc?.tab || 'mainTab'}'`,
             },
         },
     },
@@ -170,6 +207,8 @@ const tdList: VarOption[] = [
     computedUIOption('_td', scripts['_td'].name),
     ...scripts['_td'].list.map(computedScriptOption),
 ]
+const otherTabList: VarOption[] =
+    scripts['_otherTab'].list.map(computedScriptOption)
 
 qtList.splice(
     1,
@@ -292,6 +331,7 @@ const scriptVars = [
     ...zcList,
     ...qtList,
     ...tdList,
+    ...otherTabList,
 ]
 const baseVars = [
     {
@@ -348,7 +388,7 @@ const baseVars = [
             showInputLabel: '读取配置',
             mustInput: true,
             rememberInputValue: true,
-            showInputWidthBasis: '50%',
+            showInputWidthBasis: 'auto',
             syncValueOnChange: true,
             __vars: {
                 stringItems: {
@@ -357,6 +397,7 @@ const baseVars = [
                         "Object.keys(zdjl.getStorage('userConfigMap') || {'否':{}})",
                 },
             },
+            showInputWidthGrow: 1,
         },
     },
     {
@@ -366,14 +407,15 @@ const baseVars = [
             varScope: 'script',
             showInput: true,
             mustInput: true,
-            showInputWidthBasis: '25%',
+            showInputWidthBasis: 'auto',
             buttonText: '确认',
             action: {
                 type: '运行JS代码',
                 delayUnit: 1,
-                jsCode: 'let userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\nconsole.log("get---userConfigMap",userConfigMap);let curUserConfigName = zdjl.getVar(\'curUserConfigName\') || \'默认\'\r\n\r\nlet curConfigScriptVars = userConfigMap[curUserConfigName].scriptVars\r\nlet curConfigGlobalVars = userConfigMap[curUserConfigName].globalVars\r\n\r\nfor (let key in Object.keys(curConfigGlobalVars)) {\r\n    if (curConfigGlobalVars.hasOwnProperty(key) && !key.startsWith(\'__\')) {\r\n        zdjl.setVar(key, curConfigGlobalVars[key], \'global\')\r\n    }\r\n}\r\nfor (let key in Object.keys(curConfigScriptVars)) {\r\n    if (curConfigScriptVars.hasOwnProperty(key) && !key.startsWith(\'__\')) {\r\n        zdjl.setVar(key, curConfigScriptVars[key])\r\n    }\r\n}\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
+                jsCode: 'let userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\nconsole.log("get---userConfigMap",userConfigMap);let curUserConfigName = zdjl.getVar(\'curUserConfigName\') || \'默认\'\r\n\r\nlet curConfigScriptVars = userConfigMap[curUserConfigName].scriptVars\r\nlet curConfigGlobalVars = userConfigMap[curUserConfigName].globalVars\r\n\r\nfor (let key of Object.keys(curConfigGlobalVars)) {\r\n    if (curConfigGlobalVars.hasOwnProperty(key) && !key.startsWith(\'__\')) {\r\n        zdjl.setVar(key, curConfigGlobalVars[key], \'global\')\r\n    }\r\n}\r\nfor (let key of Object.keys(curConfigScriptVars)) {\r\n   console.warn(`if var`,curConfigGlobalVars.hasOwnProperty(key),key,curConfigGlobalVars[key]); if (curConfigScriptVars.hasOwnProperty(key) && !key.startsWith(\'__\')) {\r\n zdjl.setVar(key, curConfigScriptVars[key])\r\n    }\r\n}\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
             },
             closeDialogOnAction: false,
+            showInputContentAlign: 'right',
         },
     },
     {
@@ -383,58 +425,135 @@ const baseVars = [
             varScope: 'script',
             showInput: true,
             mustInput: true,
-            showInputWidthBasis: '25%',
+            showInputWidthBasis: 'auto',
             buttonText: '更多',
             action: {
                 type: '运行多个动作',
-                scriptSet: [
-                    {
-                        type: '设置变量',
-                        delayUnit: 1,
-                        vars: [
-                            {
-                                name: 'saveUserConfigName',
-                                value: {
-                                    varType: 'string',
-                                    varScope: 'script',
-                                    showInput: true,
-                                    showInputLabel: '保存到配置',
-                                    mustInput: true,
-                                    value: '配置1',
-                                },
-                            },
-                        ],
-                    },
-                    {
-                        type: '运行JS代码',
-                        jsCode: "const scriptVars = zdjl.getVars()\r\nconst globalVars = zdjl.getVars('global')\r\nlet saveUserConfigName = zdjl.getVar('saveUserConfigName') || '默认'\r\nlet curUserConfig = {\r\n    scriptVars,\r\n    globalVars,\r\n}\r\nlet userConfigMap = zdjl.getStorage('userConfigMap') || {}\r\nuserConfigMap[saveUserConfigName] = curUserConfig\r\n\r\nconsole.log('set---userConfigMap',userConfigMap);zdjl.setStorage('userConfigMap', userConfigMap)",
-                    },
-                ],
+                delayUnit: 1,
                 scriptCallbacks: {
                     afterExecFail: {
                         type: '设置变量',
+                        delayUnit: 1,
                         vars: [
                             {
                                 name: '_cancel',
                                 value: {
                                     varType: 'string',
+                                    varScope: 'script',
+                                    mustInput: true,
                                     value: "''",
                                 },
                             },
                         ],
                     },
                 },
+                scriptSet: [
+                    {
+                        type: '设置变量',
+                        delayUnit: 1,
+                        vars: [
+                            {
+                                name: 'alternative',
+                                value: {
+                                    varType: 'string',
+                                    varScope: 'script',
+                                    showInput: true,
+                                    showInputLabel: '替代项 未完成',
+                                    mustInput: true,
+                                    rememberInputValue: true,
+                                    showInputWidthBasis: '50%',
+                                    syncValueOnChange: true,
+                                    __vars: {
+                                        stringItems: {
+                                            varType: 'expression',
+                                            valueExp:
+                                                "Object.keys(zdjl.getStorage('userConfigMap') || {'否':{}})",
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                name: 'saveUserConfigName',
+                                value: {
+                                    varType: 'string',
+                                    varScope: 'script',
+                                    showInput: true,
+                                    showInputLabel: '目标配置',
+                                    mustInput: true,
+                                    syncValueOnChange: true,
+                                },
+                            },
+                            {
+                                name: '_btn_save',
+                                value: {
+                                    varType: 'ui_button',
+                                    varScope: 'script',
+                                    showInput: true,
+                                    mustInput: true,
+                                    buttonText: '保存配置',
+                                    action: {
+                                        type: '运行JS代码',
+                                        delayUnit: 1,
+                                        jsCode: 'console.warn(\'保存配置\')\r\nconst scriptVars = zdjl.getVars()\r\nconst globalVars = zdjl.getVars(\'global\')\r\nlet saveUserConfigName = zdjl.getVar(\'saveUserConfigName\') || \'默认\'\r\nlet curUserConfig = {\r\n    scriptVars,\r\n    globalVars,\r\n}\r\nlet userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\nuserConfigMap[saveUserConfigName] = curUserConfig\r\n\r\nzdjl.setStorage(\'userConfigMap\', userConfigMap)\r\nzdjl.toast(`保存配置成功：${saveUserConfigName}`, 5000);\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
+                                    },
+                                    closeDialogOnAction: true,
+                                    showInputWidthBasis: '50%',
+                                    showInputContentAlign: 'center',
+                                },
+                            },
+                            {
+                                name: '_btn_clear_storage',
+                                value: {
+                                    varType: 'ui_button',
+                                    varScope: 'script',
+                                    showInput: true,
+                                    mustInput: true,
+                                    buttonText: '删除配置',
+                                    action: {
+                                        type: '运行JS代码',
+                                        delayUnit: 1,
+                                        jsCode: 'let userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\ndelete userConfigMap[saveUserConfigName]\r\n\r\nzdjl.setStorage(\'userConfigMap\', userConfigMap)\r\nconsole.log(\'warnnn-----\',zdjl.getStorage(\'userConfigMap\')[saveUserConfigName])\r\nzdjl.toast(`删除配置成功：${saveUserConfigName}`, 5000);\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
+                                    },
+                                    closeDialogOnAction: true,
+                                    showInputWidthBasis: '50%',
+                                    showInputContentAlign: 'center',
+                                },
+                            },
+                            {
+                                name: '_btn_clear_vars',
+                                value: {
+                                    varType: 'ui_button',
+                                    varScope: 'script',
+                                    showInput: true,
+                                    mustInput: true,
+                                    buttonText: '清除变量',
+                                    action: {
+                                        type: '运行JS代码',
+                                        delayUnit: 1,
+                                        jsCode: "zdjl.clearVars()\r\nzdjl.toast('清空变量成功', 5000);",
+                                    },
+                                    closeDialogOnAction: true,
+                                },
+                            },
+                        ],
+                        dialogOKText: '勿点无用',
+                    },
+                ],
             },
             closeDialogOnAction: false,
+            showInputContentAlign: 'right',
         },
     },
 ]
-
-const actionOption = {
+var actionOption = {
     type: '设置变量',
     delay: '0',
     delayUnit: 1,
     vars: [...baseVars, ...scriptVars],
+    dialogTitle: tabs.reduce(
+        (pre, { name, key }) => pre + `[${name}](button:_tab_btn_${key}) `,
+        '#MD'
+    ),
 }
 // @ts-ignore
 await zdjl.runActionAsync(actionOption)
