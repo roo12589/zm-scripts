@@ -42,11 +42,11 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '仙迹扫荡', gap: 3, order: 0 },
             { name: '战令', gap: 0.5, order: 1000 },
             { name: '极北自动扫荡', gap: 0.5, order: -10 },
-
             { name: '仙迹商店', gap: 1, order: 100 },
             { name: '联盟任务', gap: 1, order: 10 },
             { name: '妖兽', gap: 0, order: 1000 },
             { name: '天选阁', gap: 0, order: 0 },
+            { name: '祝福', gap: 1, order: 100 },
         ],
     },
     _hd: {
@@ -54,15 +54,24 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
         list: [
             // { name: '活跃兑换', gap: 1, order: 100 },
             // { name: '机缘令兑换', gap: 1, order: 100 },
+            //{ name: '灵能', gap: 0.5, order: 1000 },
             // { name: '食粽果盘', gap: 1, order: 100 },
-
-            // { name: '灵能', gap: 0.5, order: 1000 },
             // { name: '活动合集', gap: 1, order: 100 },
             // { name: '邪羊副本', gap: 1, order: 1 },
-            { name: '决斗场', gap: 1, order: 1000 },
-            { name: '龙虎领取', gap: 1, order: 100 },
-            // { name: '扫除', gap: 1, order: 10 },
+            { name: '捕虫虫胶', gap: 1, order: 101 },
+            { name: '捕虫领取', gap: 1, order: 100 },
+            // { name: '龙虎领取', gap: 1, order: 100 },
+            // { name: '天降领取', gap: 1, order: 100 },
+            // { name: '印章兑换', gap: 1, order: 1000 },
+            { name: '青龙秘境', gap: 1, order: 1000 },
+            { name: '青龙交换', gap: 1, order: 1000 },
+            { name: '青龙领取', gap: 1, order: 10 },
+            // { name: '多关卡v2', gap: 1, order: 10 },
+            // { name: '移形白嫖', gap: 1, order: 100 },
+             { name: '扫除', gap: 1, order: 10 },
             // { name: '邪羊领取', gap: 1, order: 10 },
+            // { name: '邪羊交换', gap: 1, order: 10 },
+            // { name: '邪羊副本', gap: 1, order: 1 },
         ],
     },
     _zc: {
@@ -75,7 +84,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     },
     _qt: {
         name: '其他：',
-        list: [{ name: '祝福', gap: 0, order: 100 }],
+        list: [],
     },
     _td: {
         name: '配置及待做：',
@@ -95,6 +104,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '真灵装备', gap: 0, order: 999 },
             { name: '极北出售', gap: 0, order: 99 },
             { name: '龙宫', gap: 0, order: 100 },
+            { name: '决斗场', gap: 1, order: 1000 },
         ].map((sc) => ({ ...sc, tab: 'fzTab' })),
     },
 }
@@ -144,12 +154,12 @@ const computedUIOption = (key: string, name: string) => ({
         textSize: 13,
         textColor: '#f2ff00',
         showInputHiddenView: true,
-        __vars:{
+        __vars: {
             showInputHiddenView: {
                 varType: 'expression',
                 valueExp: `curTab !== 'mainTab'`,
             },
-        }
+        },
     },
 })
 //@ts-ignore
@@ -242,8 +252,23 @@ qtList.splice(
                     varType: 'expression',
                     varScope: 'script',
                     mustInput: true,
-                    valueExp:
-                        '[ "神兽森林", "九重天-未完成", "天宫道", "南天门", "南天王殿", "西天王殿",  "南天王殿-精英", "西天王殿-精英", "北天王殿", "彩虹楼", "朝会殿", "凌霄宝殿","青龙秘境","龙宫","玲珑塔-李天王","玲珑塔-哪吒","玲珑塔-雷震子",]\n',
+                    valueExp: `[
+  '无', '神兽森林', '九重天',
+  '天宫道', '天宫道1', '南天门',
+  '南天王殿', '西天王殿',
+  '南天王殿-精英', '西天王殿-精英',
+  '北天王殿', '彩虹楼',
+  '朝会殿', '凌霄宝殿',
+  '青龙秘境', '龙宫', '龙宫1',
+  '玲珑塔-李天王', '玲珑塔-哪吒',
+  '玲珑塔-雷震子', '玲珑塔-土行孙',
+  '转轮殿-精英', '牛魔殿-精英',
+  '御马监', '蟠桃园',
+  '罗刹宫-惊鸿殿', '罗刹宫-月夜宫',
+  '时空裂缝-涅槃','时空裂缝终',
+  '时空裂缝-锋刃','时空裂缝-精英',
+  '东天王殿'
+]`,
                 },
             },
         },
@@ -277,6 +302,19 @@ tdList.push(
         },
     },
     {
+        name: 'crushBlessing',
+        value: {
+            varType: 'bool',
+            varScope: 'global',
+            showInput: true,
+            showInputLabel: '手动碾压祝福',
+            mustInput: true,
+            showInputWidthBasis: '50%',
+            showInputContentAlign: 'left',
+            value: false,
+        },
+    },
+    {
         name: 'lianmengPurchaseStrategy',
         value: {
             varType: 'string',
@@ -288,7 +326,7 @@ tdList.push(
             showInputContentAlign: 'left',
             syncValueOnChange: true,
             rememberInputValue: true,
-            string: '二级丹',
+            string: '无',
             stringItems: ['无', '二级丹', '启灵符'],
         },
     },
@@ -378,7 +416,6 @@ const baseVars = [
             value: true,
         },
     },
-
     {
         name: 'curUserConfigName',
         value: {
