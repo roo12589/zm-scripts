@@ -1,3 +1,4 @@
+
 interface Script {
     name: string
     gap: number
@@ -74,3 +75,10 @@ interface UserConfigValue {
     globalVars: Record<string, any>
 }
 type UserConfigMapObj = Record<string, UserConfigValue>
+
+interface ScriptStatistics {
+    type: 'daily' | 'weekly' | 'special'
+    isCompleted: boolean
+    currentTimes: number
+    targetTimes: number
+}

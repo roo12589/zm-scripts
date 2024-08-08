@@ -68,7 +68,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '青龙领取', gap: 1, order: 10 },
             // { name: '多关卡v2', gap: 1, order: 10 },
             // { name: '移形白嫖', gap: 1, order: 100 },
-             { name: '扫除', gap: 1, order: 10 },
+            { name: '扫除', gap: 1, order: 10 },
             // { name: '邪羊领取', gap: 1, order: 10 },
             // { name: '邪羊交换', gap: 1, order: 10 },
             // { name: '邪羊副本', gap: 1, order: 1 },
@@ -111,7 +111,128 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
 const tabs: { name: string; key: string }[] = [
     { name: '首页', key: 'main' },
     { name: '辅助', key: 'fz' },
+    { name: '待办', key: 'todo' },
 ]
+/* 
+to do面板 额外处理 后续直接插入baseVars
+*/
+
+/**
+ * 获取脚本的统计信息
+ * @param sc 脚本对象
+ * @returns 统计信息字符串
+ */
+function getScriptStatistics(sc: Script): ScriptStatistics {
+    let res: ScriptStatistics = {
+        type: 'daily',
+        isCompleted: false,
+        currentTimes: 0,
+        targetTimes: 0,
+    }
+    const { name, gap } = sc
+
+    function getCurrentMonday() {
+        const d = new Date()
+        const date = d.getDate()
+        const day = d.getDay() === 0 ? 7 : d.getDay()
+        const targetMonday = new Date()
+        targetMonday.setDate(date - day + 1)
+        targetMonday.setHours(0, 0, 0, 0)
+        return targetMonday
+    }
+
+    const statistics = zdjl.getStorage('statistics_2')
+    if (statistics && statistics[name]) {
+        const scriptStatistic = Object.keys(statistics[name]).sort()
+        let lastTime = scriptStatistic[scriptStatistic.length - 1]
+        if (!lastTime) return res
+        let lastTimeStr = `${lastTime.slice(0, 4)}-${lastTime.slice(
+            4,
+            6
+        )}-${lastTime.slice(6, 8)}`
+        // zdjl引擎不兼容 new Date 2023-02-02 00:00:00格式字符串
+        const lastDate = new Date(lastTimeStr)
+        lastDate.setHours(0, 0, 0, 0)
+        const now = new Date()
+        // console.log('scriptStatistic', scriptStatistic)
+        // console.log('lastTime', lastTime)
+        // console.log('lastDate', lastDate)
+        const differ =
+            new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate()
+            ).valueOf() - lastDate.getTime()
+
+        // text = `${currentTime}/${targetTime}次`
+        if (gap <= 1) {
+            res.type = 'daily'
+            res.targetTimes = Math.floor(1 / gap)
+            if (differ < 24 * 60 * 60 * 1000) {
+                res.currentTimes = statistics[name][lastTime]
+
+                if (res.currentTimes >= res.targetTimes) res.isCompleted = true
+            }
+        } else if (gap === 7) {
+            res.type = 'weekly'
+            res.targetTimes = 1
+            const Monday = getCurrentMonday()
+            if (lastDate >= Monday) {
+                res.isCompleted = true
+            }
+        }
+    }
+    return res
+}
+let mainContent = `#MD
+<font color="yellow">日待办</font><br>
+<font color="red">${[...scripts._rc.list, ...scripts._hd.list]
+    .map((sc) => {
+        const statistics = getScriptStatistics(sc)
+        return {
+            name: sc.name,
+            ...statistics,
+        }
+    })
+    .filter((st) => !st.isCompleted)
+    .map((st) => st.name + ': ' + st.currentTimes + '/' + st.targetTimes + '次')
+    .join('<br>')}
+</font><br>
+<font color="yellow">日待办</font><br>
+<font>${scripts._zc.list
+    .map((sc) => {
+        const statistics = getScriptStatistics(sc)
+        return {
+            name: sc.name,
+            ...statistics,
+        }
+    })
+    .filter((st) => !st.isCompleted)
+    .map((st) => st.name + ': ' + st.currentTimes + '/' + st.targetTimes + '次')
+    .join('<br>')}
+</font>
+`
+const todoVars = [
+    {
+        name: '_todo_main1',
+        value: {
+            varType: 'ui_text',
+            varScope: 'script',
+            showInput: true,
+            mustInput: true,
+            textContent: mainContent,
+            textSize: 16,
+            showInputHiddenView: true,
+            __vars: {
+                showInputHiddenView: {
+                    varType: 'expression',
+                    valueExp: `curTab !== 'todoTab'`,
+                },
+            },
+        },
+    },
+]
+
 tabs.forEach(({ name, key }) => {
     zdjl.setVar('_tab_btn_' + key, {
         varType: 'ui_button',
@@ -234,6 +355,12 @@ qtList.splice(
             showInputContentAlign: 'left',
             syncValueOnChange: true,
             value: false,
+            __vars: {
+                showInputHiddenView: {
+                    varType: 'expression',
+                    valueExp: "curTab !== 'mainTab'",
+                },
+            },
         },
     },
     {
@@ -248,6 +375,11 @@ qtList.splice(
             syncValueOnChange: true,
             value: '',
             __vars: {
+                showInputHiddenView: {
+                    varType: 'expression',
+                    valueExp: "curTab !== 'mainTab'",
+                },
+
                 stringItems: {
                     varType: 'expression',
                     varScope: 'script',
@@ -274,7 +406,7 @@ qtList.splice(
         },
     }
 )
-/* qtList.push({
+qtList.push({
     name: 'content',
     value: {
         varType: 'string',
@@ -283,8 +415,14 @@ qtList.splice(
         showInput: true,
         showInputContentAlign: 'left',
         value: '上仙大气',
+        __vars: {
+            showInputHiddenView: {
+                varType: 'expression',
+                valueExp: "curTab !==  'fzTab'",
+            },
+        },
     },
-}) */
+})
 tdList.push(
     {
         name: 'yunyouSlot',
@@ -581,6 +719,7 @@ const baseVars = [
             showInputContentAlign: 'right',
         },
     },
+    ...todoVars,
 ]
 var actionOption = {
     type: '设置变量',
