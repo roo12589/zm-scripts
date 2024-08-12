@@ -86,8 +86,8 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
         name: '其他：',
         list: [],
     },
-    _td: {
-        name: '配置及待做：',
+    _cf: {
+        name: '配置：',
         list: ['周悬赏任务'].map((name) => ({
             name: name,
             gap: 0,
@@ -184,7 +184,21 @@ function getScriptStatistics(sc: Script): ScriptStatistics {
     }
     return res
 }
-let mainContent = `#MD
+let otherTodoList = [
+    { name: '联盟炼妖挂机', gap: 2 },
+    { name: '仙迹扫荡', gap: 3 },
+    { name: '战令', gap: 0.5 },
+    { name: '极北自动扫荡', gap: 0.5 },
+    // { name: '仙迹商店', gap: 1, },
+    // { name: '联盟任务', gap: 1,},
+    { name: '妖兽', gap: 0, date: [5, 6, 0] },
+    { name: '天选阁', gap: 0, date: [5, 6, 0] },
+    { name: '联盟化身', gap: 0, date: [5] },
+    { name: '祝福', gap: 1 },
+    { name: '混沌战场', gap: 1, noScript: true },
+    { name: '捕虫2号', gap: 1, noScript: true },
+]
+let mainTodoContent = `#MD
 <font color="yellow">日待办</font><br>
 <font color="red">${[...scripts._rc.list, ...scripts._hd.list]
     .map((sc) => {
@@ -197,7 +211,22 @@ let mainContent = `#MD
     .filter((st) => !st.isCompleted)
     .map((st) => st.name + ': ' + st.currentTimes + '/' + st.targetTimes + '次')
     .join('<br>')}
-</font><br>
+
+</font><font>   ${otherTodoList
+    .map((sc) => {
+        if (sc.noScript) {
+            return sc.name + '?'
+        }
+
+        let day = new Date().getDay()
+        if (sc.date && !sc.date.includes(day)) return ''
+        let statistics = getScriptStatistics(sc)
+
+        return `${sc.name}: ${statistics.currentTimes}/${statistics.targetTimes}次`
+    })
+    .join('<br>')}
+}</font>
+    <br>
 <font color="yellow">日待办</font><br>
 <font>${scripts._zc.list
     .map((sc) => {
@@ -212,6 +241,38 @@ let mainContent = `#MD
     .join('<br>')}
 </font>
 `
+let todayHour = new Date().getHours()
+if (todayHour >= 19 && todayHour <= 20) {
+    let sc = { name: '妖兽', gap: 0, date: [5, 6, 0] }
+    const st = getScriptStatistics(sc)
+    let day = new Date().getDay()
+    if (sc.date.includes(day) && !st.isCompleted) {
+        zdjl.runAction({
+            type: '系统提示',
+            promptType: 'alert',
+            promptTitle: '妖兽',
+            promptText: '妖兽未完成',
+            showDuration: 3000,
+            playAudio: 'true',
+            delay: '0',
+        })
+    }
+}
+/*
+if (todayHour >= 21) {
+    zdjl.runAction({
+        type: '系统提示',
+        promptType: 'alert',
+        promptTitle: '待办',
+
+        promptText: mainTodoContent,
+
+        showDuration: 3000,
+        playAudio: 'true',
+        delay: '0',
+    })
+}
+ */
 const todoVars = [
     {
         name: '_todo_main1',
@@ -220,7 +281,7 @@ const todoVars = [
             varScope: 'script',
             showInput: true,
             mustInput: true,
-            textContent: mainContent,
+            textContent: mainTodoContent,
             textSize: 16,
             showInputHiddenView: true,
             __vars: {
@@ -334,9 +395,9 @@ const qtList: VarOption[] = [
     computedUIOption('_qt', scripts['_qt'].name),
     ...scripts['_qt'].list.map(computedScriptOption),
 ]
-const tdList: VarOption[] = [
-    computedUIOption('_td', scripts['_td'].name),
-    ...scripts['_td'].list.map(computedScriptOption),
+const configList: VarOption[] = [
+    computedUIOption('_cf', scripts['_cf'].name),
+    ...scripts['_cf'].list.map(computedScriptOption),
 ]
 const otherTabList: VarOption[] =
     scripts['_otherTab'].list.map(computedScriptOption)
@@ -423,7 +484,7 @@ qtList.push({
         },
     },
 })
-tdList.push(
+const _configList = [
     {
         name: 'yunyouSlot',
         value: {
@@ -497,7 +558,18 @@ tdList.push(
             string: '全自动',
             stringItems: ['半自动', '全自动'],
         },
-    }
+    },
+]
+configList.push(
+    ..._configList.map((_c: any) => {
+        _c.value.__vars = {
+            showInputHiddenView: {
+                varType: 'expression',
+                valueExp: "curTab !== 'mainTab'",
+            },
+        } as any
+        return _c
+    })
 )
 
 const scriptVars = [
@@ -506,7 +578,7 @@ const scriptVars = [
     ...hdList,
     ...zcList,
     ...qtList,
-    ...tdList,
+    ...configList,
     ...otherTabList,
 ]
 const baseVars = [
