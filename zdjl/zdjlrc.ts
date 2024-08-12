@@ -52,11 +52,10 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     _hd: {
         name: '活动：',
         list: [
-            // { name: '活跃兑换', gap: 1, order: 100 },
-            // { name: '机缘令兑换', gap: 1, order: 100 },
+            { name: '活跃兑换', gap: 1, order: 100 },
+            { name: '机缘令兑换', gap: 1, order: 100 },
             //{ name: '灵能', gap: 0.5, order: 1000 },
             // { name: '食粽果盘', gap: 1, order: 100 },
-            // { name: '活动合集', gap: 1, order: 100 },
             // { name: '邪羊副本', gap: 1, order: 1 },
             { name: '捕虫虫胶', gap: 1, order: 101 },
             { name: '捕虫领取', gap: 1, order: 100 },
@@ -66,9 +65,11 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '青龙秘境', gap: 1, order: 1000 },
             { name: '青龙交换', gap: 1, order: 1000 },
             { name: '青龙领取', gap: 1, order: 10 },
-            // { name: '多关卡v2', gap: 1, order: 10 },
+            { name: '多关卡v2', gap: 1, order: 10000 },
+            { name: '熔炉领取', gap: 1, order: 100 },
+
             // { name: '移形白嫖', gap: 1, order: 100 },
-            { name: '扫除', gap: 1, order: 10 },
+            // { name: '扫除', gap: 1, order: 10 },
             // { name: '邪羊领取', gap: 1, order: 10 },
             // { name: '邪羊交换', gap: 1, order: 10 },
             // { name: '邪羊副本', gap: 1, order: 1 },
