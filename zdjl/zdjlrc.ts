@@ -181,6 +181,10 @@ function getScriptStatistics(sc: Script): ScriptStatistics {
             if (lastDate >= Monday) {
                 res.isCompleted = true
             }
+        } else {
+            if (differ < gap * 24 * 60 * 60 * 1000) {
+                res.isCompleted = true
+            }
         }
     }
     return res
@@ -226,9 +230,9 @@ let mainTodoContent = `#MD
         return `${sc.name}: ${statistics.currentTimes}/${statistics.targetTimes}次`
     })
     .join('<br>')}
-}</font>
+</font>
     <br>
-<font color="yellow">日待办</font><br>
+<font color="yellow">周待办</font><br>
 <font>${scripts._zc.list
     .map((sc) => {
         const statistics = getScriptStatistics(sc)
