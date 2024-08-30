@@ -330,7 +330,7 @@ zdjl.setStorage('scriptOrderMap', scriptOrderMap)
 '关卡',
 'content',
 */
-const computedUIOption = (key: string, name: string) => ({
+const computedUIOption = (key: string, name: string): UIOption => ({
     name: key,
     value: {
         varType: 'ui_text',
@@ -342,15 +342,15 @@ const computedUIOption = (key: string, name: string) => ({
         textColor: '#f2ff00',
         showInputHiddenView: true,
         __vars: {
-            showInputHiddenView: {
+            showInputContentAlign: {
+                valueExp: `curTab === '${key}Tab' ? '#000000' : '#00000000'`,
                 varType: 'expression',
-                valueExp: `curTab !== 'mainTab'`,
             },
         },
     },
 })
 //@ts-ignore
-const computedScriptOption = (sc: Script) => ({
+const computedScriptOption = (sc: Script): Option => ({
     name: sc.name,
     value: {
         varType: 'bool',
@@ -448,8 +448,8 @@ qtList.splice(
 
                 stringItems: {
                     varType: 'expression',
-                    varScope: 'script',
-                    mustInput: true,
+                    // varScope: 'script',
+                    // mustInput: true,
                     valueExp: `[
   '无', '神兽森林', '九重天',
   '天宫道', '天宫道1', '南天门',
