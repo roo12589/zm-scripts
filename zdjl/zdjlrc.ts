@@ -52,22 +52,26 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     _hd: {
         name: '活动：',
         list: [
-            { name: '活跃兑换', gap: 1, order: 100 },
-            { name: '机缘令兑换', gap: 1, order: 100 },
+            // { name: '活跃兑换', gap: 1, order: 100 },
+            // { name: '机缘令兑换', gap: 1, order: 100 },
+            { name: '见缝插针', gap: 1, order: 100 },
             //{ name: '灵能', gap: 0.5, order: 1000 },
             // { name: '食粽果盘', gap: 1, order: 100 },
             // { name: '邪羊副本', gap: 1, order: 1 },
-            { name: '捕虫虫胶', gap: 1, order: 101 },
-            { name: '捕虫领取', gap: 1, order: 100 },
+            // { name: '捕虫虫胶', gap: 1, order: 101 },
+      //      { name: '海钓礼包', gap: 1, order: 1002 },
+       //     { name: '海钓交换', gap: 1, order: 1001 },
+           // { name: '海钓领取', gap: 1, order: 1000 },
+           // { name: '分享', gap: 1, order: 999 },
+            // { name: '捕虫领取', gap: 1, order: 100 },
             // { name: '龙虎领取', gap: 1, order: 100 },
             // { name: '天降领取', gap: 1, order: 100 },
             // { name: '印章兑换', gap: 1, order: 1000 },
-            { name: '青龙秘境', gap: 1, order: 1000 },
-            { name: '青龙交换', gap: 1, order: 1000 },
-            { name: '青龙领取', gap: 1, order: 10 },
-            { name: '多关卡v2', gap: 1, order: 10000 },
-            { name: '熔炉领取', gap: 1, order: 100 },
-
+            // { name: '青龙秘境', gap: 1, order: 1000 },
+            // { name: '青龙交换', gap: 1, order: 1000 },
+            // { name: '青龙领取', gap: 1, order: 10 },
+            // { name: '多关卡v2', gap: 1, order: 10000 },
+            // { name: '熔炉领取', gap: 1, order: 100 },
             // { name: '移形白嫖', gap: 1, order: 100 },
             // { name: '扫除', gap: 1, order: 10 },
             // { name: '邪羊领取', gap: 1, order: 10 },
@@ -200,8 +204,8 @@ let otherTodoList = [
     { name: '天选阁', gap: 0, date: [5, 6, 0] },
     { name: '联盟化身', gap: 0, date: [5] },
     { name: '祝福', gap: 1 },
-    { name: '混沌战场', gap: 1, noScript: true },
-    { name: '捕虫2号', gap: 1, noScript: true },
+    // { name: '混沌战场', gap: 1, noScript: true },
+    // { name: '捕虫2号', gap: 1, noScript: true },
 ]
 let mainTodoContent = `#MD
 <font color="yellow">日待办</font><br>
@@ -218,7 +222,7 @@ let mainTodoContent = `#MD
     .join('<br>')}
 
 </font><font>   ${otherTodoList
-    .map((sc) => {
+    .map((sc:any) => {
         if (sc.noScript) {
             return sc.name + '?'
         }
