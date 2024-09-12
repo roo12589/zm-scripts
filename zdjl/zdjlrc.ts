@@ -59,10 +59,10 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             // { name: '食粽果盘', gap: 1, order: 100 },
             // { name: '邪羊副本', gap: 1, order: 1 },
             // { name: '捕虫虫胶', gap: 1, order: 101 },
-      //      { name: '海钓礼包', gap: 1, order: 1002 },
-       //     { name: '海钓交换', gap: 1, order: 1001 },
-           // { name: '海钓领取', gap: 1, order: 1000 },
-           // { name: '分享', gap: 1, order: 999 },
+            //      { name: '海钓礼包', gap: 1, order: 1002 },
+            //     { name: '海钓交换', gap: 1, order: 1001 },
+            // { name: '海钓领取', gap: 1, order: 1000 },
+            // { name: '分享', gap: 1, order: 999 },
             // { name: '捕虫领取', gap: 1, order: 100 },
             // { name: '龙虎领取', gap: 1, order: 100 },
             // { name: '天降领取', gap: 1, order: 100 },
@@ -222,7 +222,7 @@ let mainTodoContent = `#MD
     .join('<br>')}
 
 </font><font>   ${otherTodoList
-    .map((sc:any) => {
+    .map((sc: any) => {
         if (sc.noScript) {
             return sc.name + '?'
         }
@@ -258,7 +258,7 @@ if (todayHour >= 19 && todayHour <= 20) {
     if (sc.date.includes(day) && !st.isCompleted) {
         zdjl.runAction({
             type: '系统提示',
-            promptType: 'alert',
+            // promptType: 'alert',
             promptTitle: '妖兽',
             promptText: '妖兽未完成',
             showDuration: 3000,
@@ -549,7 +549,8 @@ const _configList = [
             showInputWidthBasis: '50%',
             showInputContentAlign: 'left',
             syncValueOnChange: true,
-            string: '半自动',
+            rememberInputValue: true,
+            string: '全自动',
             stringItems: ['半自动', '全自动'],
         },
     },
