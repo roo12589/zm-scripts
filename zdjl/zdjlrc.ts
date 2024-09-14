@@ -346,9 +346,9 @@ const computedUIOption = (key: string, name: string): UIOption => ({
         textColor: '#f2ff00',
         showInputHiddenView: true,
         __vars: {
-            showInputContentAlign: {
-                valueExp: `curTab === '${key}Tab' ? '#000000' : '#00000000'`,
+            showInputHiddenView: {
                 varType: 'expression',
+                valueExp: `curTab !== 'mainTab'`,
             },
         },
     },
