@@ -52,9 +52,9 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     _hd: {
         name: '活动：',
         list: [
-            // { name: '活跃兑换', gap: 1, order: 100 },
-            // { name: '机缘令兑换', gap: 1, order: 100 },
-            { name: '见缝插针', gap: 1, order: 100 },
+            { name: '活跃兑换', gap: 1, order: 100 },
+            { name: '机缘令兑换', gap: 1, order: 100 },
+            // { name: '见缝插针', gap: 1, order: 100 },
             //{ name: '灵能', gap: 0.5, order: 1000 },
             // { name: '食粽果盘', gap: 1, order: 100 },
             // { name: '邪羊副本', gap: 1, order: 1 },
@@ -552,6 +552,23 @@ const _configList = [
             rememberInputValue: true,
             string: '全自动',
             stringItems: ['半自动', '全自动'],
+        },
+    },
+    {
+        name: 'fzJintuStrategy',
+        value: {
+            varType: 'string',
+            varScope: 'global',
+            showInput: true,
+            showInputLabel: '目标地点',
+            // showInputHiddenLabel: true, // 不展示变量名称
+            mustInput: true,
+            showInputWidthBasis: '50%',
+            showInputContentAlign: 'left',
+            syncValueOnChange: true,
+            rememberInputValue: true,
+            string: '村庄',
+            stringItems: ['村庄', '天庭','炼狱','蓬莱','极北','仙盟','联盟','活动面板'],
         },
     },
     {
