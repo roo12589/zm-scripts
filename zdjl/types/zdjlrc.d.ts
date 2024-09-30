@@ -10,35 +10,37 @@ interface Script {
  */
 interface Option extends Variable {}
 
-type VarOption = UIOption | Option
+type VarOption = UIOption | Option | ConfigOption
 
 interface UIOption {
     name: string
     value: TextVariable | ButtonVariable | ImageVariable
 }
-interface TextVariable extends Omit<VariableValue, 'value'> {
-    varType: 'ui_text'
-    showInput: true
-    textContent: string
-    textSize?: number
-    textColor?: string
-}
-interface ButtonVariable extends Omit<VariableValue, 'value'> {
-    varType: 'ui_button'
-    showInput: true
-    buttonText: string
-    buttonStyle: 'button' | 'link' | 'none'
-    action: actionJSON
-}
-interface ImageVariable extends Omit<VariableValue, 'value'> {
-    varType: 'imageData'
-    showInput: true
-    onlyForShow: true
-    imageData: {
-        data: string
+interface ConfigOption extends Option {
+    name: string
+    value: {
+        varType: string
+        varScope: string
+        showInput: boolean
+        showInputLabel?: string
+        mustInput: boolean
+        showInputWidthBasis?: string
+        showInputContentAlign?: string
+        syncValueOnChange?: boolean
+        number?: number
+        selectItems?: number[]
+        value?: string|boolean
+        stringItems?: string[]
+        // string?: string
+        rememberInputValue?: boolean
+        __vars?: Partial<
+            Record<
+                keyof VariableValue,
+                { varType: 'expression'; valueExp: string }
+            >
+        >
     }
 }
-
 interface ScriptOption {
     name: string
     value: {
@@ -54,33 +56,6 @@ interface ScriptOption {
         __vars: {
             textAppendRight: {
                 varType: string
-                valueExp: string
-            }
-        }
-    }
-}
-interface ConfigOption {
-    name: string
-    value: {
-        varType: string
-        varScope: string
-        showInput: boolean
-        showInputLabel?: string
-        mustInput: boolean
-        showInputWidthBasis?: string
-        showInputContentAlign?: string
-        syncValueOnChange?: boolean
-        number?: number
-        selectItems?: number[]
-        value?: string
-        stringItems?: string[]
-        string?: string
-        rememberInputValue?: boolean
-        __vars?: {
-            stringItems?: {
-                varType: 'expression'
-                varScope: 'script'
-                mustInput: true
                 valueExp: string
             }
         }
@@ -153,7 +128,7 @@ interface VariableValue {
     backgroundImageData?: string // 背景图片
     showInputHiddenView?: boolean // 隐藏变量显示
     showInputHiddenDesc?: boolean // 隐藏变量描述展示
-    varScope?: string // 变量作用域
+    varScope?: 'script' | 'global' // 变量作用域
     varDesc?: string // 变量描述
     __vars?: Partial<
         Record<keyof VariableValue, { varType: 'expression'; valueExp: string }>
@@ -169,4 +144,27 @@ interface Condition {
     repeatWhenFalseLimit?: number // 重复上限
     repeatWhenFalseRepeatDelay?: number // 重复间隔
     desc?: string // 条件描述
+}
+
+interface TextVariable extends Omit<VariableValue, 'value'> {
+    varType: 'ui_text'
+    showInput: true
+    textContent: string
+    textSize?: number
+    textColor?: string
+}
+interface ButtonVariable extends Omit<VariableValue, 'value'> {
+    varType: 'ui_button'
+    showInput: true
+    buttonText: string
+    buttonStyle: 'button' | 'link' | 'none'
+    action: actionJSON
+}
+interface ImageVariable extends Omit<VariableValue, 'value'> {
+    varType: 'imageData'
+    showInput: true
+    onlyForShow: true
+    imageData: {
+        data: string
+    }
 }

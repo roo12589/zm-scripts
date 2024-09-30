@@ -55,7 +55,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '活跃兑换', gap: 1, order: 100 },
             { name: '机缘令兑换', gap: 1, order: 100 },
             // { name: '见缝插针', gap: 1, order: 100 },
-            //{ name: '灵能', gap: 0.5, order: 1000 },
+            { name: '灵能', gap: 0.5, order: 1000 },
             // { name: '食粽果盘', gap: 1, order: 100 },
             // { name: '邪羊副本', gap: 1, order: 1 },
             // { name: '捕虫虫胶', gap: 1, order: 101 },
@@ -66,12 +66,13 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             // { name: '捕虫领取', gap: 1, order: 100 },
             // { name: '龙虎领取', gap: 1, order: 100 },
             // { name: '天降领取', gap: 1, order: 100 },
+            // { name: '寻宝领取', gap: 1, order: 100 },
             // { name: '印章兑换', gap: 1, order: 1000 },
             // { name: '青龙秘境', gap: 1, order: 1000 },
             // { name: '青龙交换', gap: 1, order: 1000 },
             // { name: '青龙领取', gap: 1, order: 10 },
-            // { name: '多关卡v2', gap: 1, order: 10000 },
-            // { name: '熔炉领取', gap: 1, order: 100 },
+            { name: '多关卡v2', gap: 0.5, order: 10000 },
+            { name: '熔炉领取', gap: 1, order: 110 },
             // { name: '移形白嫖', gap: 1, order: 100 },
             // { name: '扫除', gap: 1, order: 10 },
             // { name: '邪羊领取', gap: 1, order: 10 },
@@ -383,6 +384,67 @@ const computedScriptOption = (sc: Script): Option => ({
         },
     },
 })
+interface CustomConfig {
+    key: string
+    type: 'boolean' | 'numberArray' | 'stringArray'
+    label?: string
+    valueConfig?: Partial<ConfigOption['value']> &
+        (
+            | { selectItems: string[]; number?: number }
+            | { stringItems: string[]; string?: string }
+            | { value?: boolean }
+        )
+}
+const computedConfigOption = (config: CustomConfig) => {
+    const { key, type, label = key, valueConfig } = config
+    let res: ConfigOption = {
+        name: key,
+        value: {
+            varType: 'number',
+            varScope: 'script',
+            showInput: true,
+            showInputLabel: label,
+            mustInput: true,
+            showInputWidthBasis: '50%',
+            showInputContentAlign: 'left',
+            syncValueOnChange: true,
+            rememberInputValue: false,
+        },
+    }
+    if (type === 'numberArray') {
+        let diff = {
+            varType: 'number',
+            showInputWidthBasis: '25%',
+            number:
+                valueConfig?.number ||
+                (valueConfig?.selectItems as number[])[0] ||
+                1,
+            // selectItems: [1, 2, 3, 4, 5, 6, 7, 8],
+        }
+        Object.assign(res.value, diff, valueConfig)
+    }
+    if (type === 'stringArray') {
+        let diff = {
+            varType: 'string',
+            varScope: 'global',
+            string:
+                valueConfig?.value ||
+                (valueConfig?.stringItems as string[])[0] ||
+                '',
+        }
+        Object.assign(res.value, diff, valueConfig)
+    }
+    if (type === 'boolean') {
+        let diff = {
+            varType: 'bool',
+            varScope: 'global',
+            value: false,
+        }
+        Object.assign(res.value, diff, valueConfig)
+    }
+
+    return res
+}
 
 const rcList: VarOption[] = [
     computedUIOption('_rc', scripts['_rc'].name),
@@ -414,16 +476,11 @@ const otherTabList: VarOption[] =
 qtList.splice(
     1,
     0,
-    {
-        name: '天庭关卡',
-        value: {
-            varType: 'bool',
+    computedConfigOption({
+        key: '天庭关卡',
+        type: 'boolean',
+        valueConfig: {
             varScope: 'script',
-            showInput: true,
-            mustInput: true,
-            showInputWidthBasis: '50%',
-            showInputContentAlign: 'left',
-            syncValueOnChange: true,
             value: false,
             __vars: {
                 showInputHiddenView: {
@@ -432,49 +489,53 @@ qtList.splice(
                 },
             },
         },
-    },
-    {
-        name: '关卡',
-        value: {
-            varType: 'string',
-            varScope: 'global',
-            showInput: true,
-            mustInput: true,
-            showInputWidthBasis: '50%',
-            showInputContentAlign: 'left',
-            syncValueOnChange: true,
-            value: '',
+    }),
+    computedConfigOption({
+        key: '关卡',
+        type: 'stringArray',
+        valueConfig: {
+            stringItems: [
+                '无',
+                '神兽森林',
+                '九重天',
+                '天宫道',
+                '天宫道1',
+                '南天门',
+                '南天王殿',
+                '西天王殿',
+                '南天王殿-精英',
+                '西天王殿-精英',
+                '北天王殿',
+                '彩虹楼',
+                '朝会殿',
+                '凌霄宝殿',
+                '青龙秘境',
+                '龙宫',
+                '龙宫1',
+                '玲珑塔-李天王',
+                '玲珑塔-哪吒',
+                '玲珑塔-雷震子',
+                '玲珑塔-土行孙',
+                '转轮殿-精英',
+                '牛魔殿-精英',
+                '御马监',
+                '蟠桃园',
+                '罗刹宫-惊鸿殿',
+                '罗刹宫-月夜宫',
+                '时空裂缝-涅槃',
+                '时空裂缝终',
+                '时空裂缝-锋刃',
+                '时空裂缝-精英',
+                '东天王殿',
+            ],
             __vars: {
                 showInputHiddenView: {
                     varType: 'expression',
                     valueExp: "curTab !== 'mainTab'",
                 },
-
-                stringItems: {
-                    varType: 'expression',
-                    // varScope: 'script',
-                    // mustInput: true,
-                    valueExp: `[
-  '无', '神兽森林', '九重天',
-  '天宫道', '天宫道1', '南天门',
-  '南天王殿', '西天王殿',
-  '南天王殿-精英', '西天王殿-精英',
-  '北天王殿', '彩虹楼',
-  '朝会殿', '凌霄宝殿',
-  '青龙秘境', '龙宫', '龙宫1',
-  '玲珑塔-李天王', '玲珑塔-哪吒',
-  '玲珑塔-雷震子', '玲珑塔-土行孙',
-  '转轮殿-精英', '牛魔殿-精英',
-  '御马监', '蟠桃园',
-  '罗刹宫-惊鸿殿', '罗刹宫-月夜宫',
-  '时空裂缝-涅槃','时空裂缝终',
-  '时空裂缝-锋刃','时空裂缝-精英',
-  '东天王殿'
-]`,
-                },
             },
         },
-    }
+    })
 )
 qtList.push({
     name: 'content',
@@ -494,98 +555,64 @@ qtList.push({
     },
 })
 const _configList = [
-    {
-        name: 'yunyouSlot',
-        value: {
-            varType: 'number',
-            varScope: 'global',
-            showInput: true,
-            showInputLabel: '云游槽位',
-            mustInput: true,
-            showInputWidthBasis: '25%',
-            showInputContentAlign: 'left',
-            syncValueOnChange: true,
+    computedConfigOption({
+        key: 'yunyouSlot',
+        label: '云游槽位',
+        type: 'numberArray',
+        valueConfig: {
             number: 2,
             selectItems: [1, 2, 3],
+            showInputWidthBasis: '25%',
         },
-    },
-    {
-        name: 'crushBlessing',
-        value: {
-            varType: 'bool',
-            varScope: 'global',
-            showInput: true,
-            showInputLabel: '手动碾压祝福',
-            mustInput: true,
-            showInputWidthBasis: '50%',
-            showInputContentAlign: 'left',
+    }),
+    computedConfigOption({
+        key: 'crushBlessing',
+        label: '手动碾压祝福',
+        type: 'boolean',
+        valueConfig: {
             value: false,
         },
-    },
-    {
-        name: 'lianmengPurchaseStrategy',
-        value: {
-            varType: 'string',
-            varScope: 'global',
-            showInput: true,
-            showInputLabel: '炼妖购买策略',
-            mustInput: true,
-            showInputWidthBasis: '50%',
-            showInputContentAlign: 'left',
-            syncValueOnChange: true,
-            rememberInputValue: true,
-            string: '无',
+    }),
+    computedConfigOption({
+        key: 'lianmengPurchaseStrategy',
+        label: '炼妖购买策略',
+        type: 'stringArray',
+        valueConfig: {
             stringItems: ['无', '二级丹', '启灵符'],
-        },
-    },
-    {
-        name: 'kunlunStrategy',
-        value: {
-            varType: 'string',
-            varScope: 'global',
-            showInput: true,
-            showInputLabel: '昆仑山策略',
-            mustInput: true,
-            showInputWidthBasis: '50%',
-            showInputContentAlign: 'left',
-            syncValueOnChange: true,
+            value: '无',
             rememberInputValue: true,
-            string: '全自动',
-            stringItems: ['半自动', '全自动'],
         },
-    },
-    {
-        name: 'fzJintuStrategy',
-        value: {
-            varType: 'string',
-            varScope: 'global',
-            showInput: true,
-            showInputLabel: '目标地点',
-            // showInputHiddenLabel: true, // 不展示变量名称
-            mustInput: true,
-            showInputWidthBasis: '50%',
-            showInputContentAlign: 'left',
-            syncValueOnChange: true,
+    }),
+    computedConfigOption({
+        key: 'kunlunStrategy',
+        label: '昆仑山策略',
+        type: 'stringArray',
+        valueConfig: {
+            value: '全自动',
+            stringItems: ['半自动', '全自动'],
             rememberInputValue: true,
-            string: '村庄',
-            stringItems: ['村庄', '天庭','炼狱','蓬莱','极北','仙盟','联盟','活动面板'],
         },
-    },
-    {
-        name: 'lianmengRewardStrategy',
-        value: {
-            varType: 'string',
-            varScope: 'global',
-            showInput: true,
-            showInputLabel: '悬赏策略',
-            mustInput: true,
-            showInputWidthBasis: '50%',
-            showInputContentAlign: 'left',
-            syncValueOnChange: true,
-            string: '全自动',
-            stringItems: ['半自动', '全自动'],
+    }),
+
+    computedConfigOption({
+        key: 'fzJintuStrategy',
+        label: '目标地点',
+        type: 'stringArray',
+        valueConfig: {
+            value: '村庄',
+            stringItems: [
+                '村庄',
+                '天庭',
+                '炼狱',
+                '蓬莱',
+                '极北',
+                '仙盟',
+                '联盟',
+                '活动面板',
+            ],
+            rememberInputValue: true,
         },
-    },
+    }),
 ]
 configList.push(
     ..._configList.map((_c: any) => {
@@ -786,7 +813,7 @@ const baseVars = [
                                     action: {
                                         type: '运行JS代码',
                                         delayUnit: 1,
-                                        jsCode: 'let userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\ndelete userConfigMap[saveUserConfigName]\r\n\r\nzdjl.setStorage(\'userConfigMap\', userConfigMap)\r\nconsole.log(\'warnnn-----\',zdjl.getStorage(\'userConfigMap\')[saveUserConfigName])\r\nzdjl.toast(`删除配置成功：${saveUserConfigName}`, 5000);\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
+                                        jsCode: 'let userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\ndelete userConfigMap[saveUserConfigName]\r\n\r\nzdjl.setStorage(\'userConfigMap\', userConfigMap)\r\nconsole.log(\'warn-----\',zdjl.getStorage(\'userConfigMap\')[saveUserConfigName])\r\nzdjl.toast(`删除配置成功：${saveUserConfigName}`, 5000);\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
                                     },
                                     closeDialogOnAction: true,
                                     showInputWidthBasis: '50%',
