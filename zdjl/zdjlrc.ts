@@ -29,10 +29,25 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
         list: [
             { name: '日常活跃1000', gap: 1, order: 0 },
             { name: '日常爬山v2', gap: 1, order: 0 },
-            { name: '炼狱黄泉路', gap: 1, order: 10 },
-            { name: '极光天照', gap: 1, order: -100 },
-            { name: '一键碾压', gap: 1, order: 0 },
+
+            {
+                name: '一键碾压',
+                gap: 1,
+                order: 0,
+                /*                 configList: [
+                    {
+                        key: 'crushBlessing',
+                        label: '手动选择祝福',
+                        type: 'boolean',
+                        valueConfig: {
+                            value: false,
+                        },
+                    },
+                ], */
+            },
             { name: '扫蛋', gap: 1, order: 100 },
+            { name: '极光天照', gap: 1, order: -100 },
+            { name: '祝福', gap: 1, order: 100 },
         ],
     },
     _rc2: {
@@ -43,10 +58,10 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '战令', gap: 0.5, order: 1000 },
             { name: '极北自动扫荡', gap: 0.5, order: -10 },
             { name: '仙迹商店', gap: 1, order: 100 },
-            { name: '联盟任务', gap: 1, order: 10 },
+            { name: '联盟任务', gap: 0, order: 10 },
             { name: '妖兽', gap: 0, order: 1000 },
             { name: '天选阁', gap: 0, order: 0 },
-            { name: '祝福', gap: 1, order: 100 },
+            { name: '炼狱黄泉路', gap: 0, order: 10 },
         ],
     },
     _hd: {
@@ -94,17 +109,58 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     },
     _cf: {
         name: '配置：',
-        list: ['周悬赏任务'].map((name) => ({
+        list: [] /* .map((name) => ({
             name: name,
             gap: 0,
-        })),
+        })), */,
     },
     _otherTab: {
         name: '_',
         list: [
-            { name: '辅助进图', gap: 0, order: 0 },
+            {
+                name: '辅助进图',
+                gap: 0,
+                order: 0,
+                configList: [
+                    {
+                        key: 'fzJintuStrategy',
+                        label: '目标地点',
+                        type: 'stringArray' as 'stringArray',
+                        valueConfig: {
+                            value: '村庄',
+                            stringItems: [
+                                '村庄',
+                                '天庭',
+                                '炼狱',
+                                '蓬莱',
+                                '极北',
+                                '仙盟',
+                                '联盟',
+                                '活动面板',
+                            ],
+                            rememberInputValue: true,
+                        },
+                    },
+                ],
+            },
+            {
+                name: '云游',
+                gap: 0,
+                order: 1000,
+                configList: [
+                    {
+                        key: 'yunyouSlot',
+                        label: '云游槽位',
+                        type: 'numberArray',
+                        valueConfig: {
+                            number: 2,
+                            selectItems: [1, 2, 3],
+                            showInputWidthBasis: '25%',
+                        },
+                    },
+                ],
+            },
             { name: '联盟悬赏辅助', gap: 0, order: 0 },
-            { name: '云游', gap: 0, order: 1000 },
             { name: '仙女消费', gap: 0, order: 998 },
             { name: '领取邮件', gap: 0, order: 1000 },
             { name: '真灵装备', gap: 0, order: 999 },
@@ -355,35 +411,51 @@ const computedUIOption = (key: string, name: string): UIOption => ({
     },
 })
 //@ts-ignore
-const computedScriptOption = (sc: Script): Option => ({
-    name: sc.name,
-    value: {
-        varType: 'bool',
-        varScope: 'script',
-        showInput: true,
-        mustInput: true,
-        showInputWidthBasis: '50%',
-        showInputContentAlign: 'left',
-        syncValueOnChange: true,
-        value: zdjl.getVar(sc.name) || false,
-        showInputHiddenView: true,
-        __vars: {
-            textAppendRight: {
-                varType: 'expression',
-                valueExp:
-                    "(function(){function getCurrentMonday(){const d=new Date();const date=d.getDate();const day=d.getDay()===0?7:d.getDay();const targetMonday=new Date();targetMonday.setDate(date-day+1);targetMonday.setHours(0,0,0,0);return targetMonday;}let name='" +
-                    sc.name +
-                    "';let gap=" +
-                    sc.gap +
-                    ";const statistics=zdjl.getStorage('statistics_2');if(statistics&&statistics[name]){const scriptStatistic=Object.keys(statistics[name]).sort();let lastTime=scriptStatistic[scriptStatistic.length-1];if(!lastTime)return'';let lastTimeStr=`${lastTime.slice(0,4)}-${lastTime.slice(4,6)}-${lastTime.slice(6,8)}`;const lastDate=new Date(lastTimeStr);lastDate.setHours(0,0,0,0);const now=new Date();console.log('scriptStatistic',scriptStatistic);console.log('lastTime',lastTime);console.log('lastDate',lastDate);const differ=new Date(now.getFullYear(),now.getMonth(),now.getDate())-lastDate.getTime();let color='#ffffff';let text;if(differ<24*60*60*1000){text='今天';}else if(differ<2*24*60*60*1000){text='昨天';}else if(differ<3*24*60*60*1000){text='前天';}else{text=differ/(24*60*60*1000)+'天前';}console.log(scriptStatistic,gap,gap*24*60*60*1000,differ);if(gap&&gap<1){color=zdjl.getVar('color_0');if(differ<24*60*60*1000){let targetTime=Math.floor(1/gap);let currentTime=statistics[name][lastTime]||0;text=`${currentTime}/${targetTime}次`;if(currentTime>=targetTime){color=zdjl.getVar('color_100');}}}if(gap&&gap>=1){if(differ<gap*24*60*60*1000){color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}if(gap===7){const Monday=getCurrentMonday();if(lastDate>=Monday){text='完成';color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}}}return`#MD<font color=${color}>${text}</font>`;}return'';})()",
-            },
-            showInputHiddenView: {
-                varType: 'expression',
-                valueExp: `curTab !== '${sc?.tab || 'mainTab'}'`,
+const computedScriptOption = (sc: Script): Option | VarOption[] => {
+    let op: Option = {
+        name: sc.name,
+        value: {
+            varType: 'bool',
+            varScope: 'script',
+            showInput: true,
+            mustInput: true,
+            showInputWidthBasis: '50%',
+            showInputContentAlign: 'left',
+            syncValueOnChange: true,
+            value: zdjl.getVar(sc.name) || false,
+            showInputHiddenView: true,
+            __vars: {
+                textAppendRight: {
+                    varType: 'expression',
+                    valueExp:
+                        "(function(){function getCurrentMonday(){const d=new Date();const date=d.getDate();const day=d.getDay()===0?7:d.getDay();const targetMonday=new Date();targetMonday.setDate(date-day+1);targetMonday.setHours(0,0,0,0);return targetMonday;}let name='" +
+                        sc.name +
+                        "';let gap=" +
+                        sc.gap +
+                        ";const statistics=zdjl.getStorage('statistics_2');if(statistics&&statistics[name]){const scriptStatistic=Object.keys(statistics[name]).sort();let lastTime=scriptStatistic[scriptStatistic.length-1];if(!lastTime)return'';let lastTimeStr=`${lastTime.slice(0,4)}-${lastTime.slice(4,6)}-${lastTime.slice(6,8)}`;const lastDate=new Date(lastTimeStr);lastDate.setHours(0,0,0,0);const now=new Date();console.log('scriptStatistic',scriptStatistic);console.log('lastTime',lastTime);console.log('lastDate',lastDate);const differ=new Date(now.getFullYear(),now.getMonth(),now.getDate())-lastDate.getTime();let color='#ffffff';let text;if(differ<24*60*60*1000){text='今天';}else if(differ<2*24*60*60*1000){text='昨天';}else if(differ<3*24*60*60*1000){text='前天';}else{text=differ/(24*60*60*1000)+'天前';}console.log(scriptStatistic,gap,gap*24*60*60*1000,differ);if(gap&&gap<1){color=zdjl.getVar('color_0');if(differ<24*60*60*1000){let targetTime=Math.floor(1/gap);let currentTime=statistics[name][lastTime]||0;text=`${currentTime}/${targetTime}次`;if(currentTime>=targetTime){color=zdjl.getVar('color_100');}}}if(gap&&gap>=1){if(differ<gap*24*60*60*1000){color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}if(gap===7){const Monday=getCurrentMonday();if(lastDate>=Monday){text='完成';color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}}}return`#MD<font color=${color}>${text}</font>`;}return'';})()",
+                },
+                showInputHiddenView: {
+                    varType: 'expression',
+                    valueExp: `curTab !== '${sc?.tab || 'mainTab'}'`,
+                },
             },
         },
-    },
-})
+    }
+    if (!sc.configList) return op
+
+    return [
+        op,
+        ...sc.configList.map((cf) => {
+            cf.valueConfig = cf.valueConfig || {}
+            cf.valueConfig.__vars = cf.valueConfig.__vars || {}
+            cf.valueConfig.__vars.showInputHiddenView = {
+                varType: 'expression',
+                valueExp: `curTab !== '${sc?.tab || 'mainTab'}'`,
+            }
+            return computedConfigOption(cf)
+        }),
+    ]
+}
 interface CustomConfig {
     key: string
     type: 'boolean' | 'numberArray' | 'stringArray'
@@ -446,31 +518,31 @@ const computedConfigOption = (config: CustomConfig) => {
     return res
 }
 
-const rcList: VarOption[] = [
+const rcList: (VarOption | VarOption[])[] = [
     computedUIOption('_rc', scripts['_rc'].name),
     ...scripts['_rc'].list.map(computedScriptOption),
 ]
-const rc2List: VarOption[] = [
+const rc2List: (VarOption | VarOption[])[] = [
     computedUIOption('_rc2', scripts['_rc2'].name),
     ...scripts['_rc2'].list.map(computedScriptOption),
 ]
-const zcList: VarOption[] = [
+const zcList: (VarOption | VarOption[])[] = [
     computedUIOption('_zc', scripts['_zc'].name),
     ...scripts['_zc'].list.map(computedScriptOption),
 ]
-const hdList: VarOption[] = [
+const hdList: (VarOption | VarOption[])[] = [
     computedUIOption('_hd', scripts['_hd'].name),
     ...scripts['_hd'].list.map(computedScriptOption),
 ]
-const qtList: VarOption[] = [
+const qtList: (VarOption | VarOption[])[] = [
     computedUIOption('_qt', scripts['_qt'].name),
     ...scripts['_qt'].list.map(computedScriptOption),
 ]
-const configList: VarOption[] = [
+const configList: (VarOption | VarOption[])[] = [
     computedUIOption('_cf', scripts['_cf'].name),
     ...scripts['_cf'].list.map(computedScriptOption),
 ]
-const otherTabList: VarOption[] =
+const otherTabList: (VarOption | VarOption[])[] =
     scripts['_otherTab'].list.map(computedScriptOption)
 
 qtList.splice(
@@ -537,42 +609,24 @@ qtList.splice(
         },
     })
 )
-qtList.push({
-    name: 'content',
-    value: {
-        varType: 'string',
-        varScope: 'global',
-        mustInput: false,
-        showInput: true,
-        showInputContentAlign: 'left',
-        value: '上仙大气',
-        __vars: {
-            showInputHiddenView: {
-                varType: 'expression',
-                valueExp: "curTab !==  'fzTab'",
-            },
-        },
-    },
-})
+// qtList.push({
+//     name: 'content',
+//     value: {
+//         varType: 'string',
+//         varScope: 'global',
+//         mustInput: false,
+//         showInput: true,
+//         showInputContentAlign: 'left',
+//         value: '上仙大气',
+//         __vars: {
+//             showInputHiddenView: {
+//                 varType: 'expression',
+//                 valueExp: "curTab !==  'fzTab'",
+//             },
+//         },
+//     },
+// })
 const _configList = [
-    computedConfigOption({
-        key: 'yunyouSlot',
-        label: '云游槽位',
-        type: 'numberArray',
-        valueConfig: {
-            number: 2,
-            selectItems: [1, 2, 3],
-            showInputWidthBasis: '25%',
-        },
-    }),
-    computedConfigOption({
-        key: 'crushBlessing',
-        label: '手动碾压祝福',
-        type: 'boolean',
-        valueConfig: {
-            value: false,
-        },
-    }),
     computedConfigOption({
         key: 'lianmengPurchaseStrategy',
         label: '炼妖购买策略',
@@ -593,24 +647,12 @@ const _configList = [
             rememberInputValue: true,
         },
     }),
-
     computedConfigOption({
-        key: 'fzJintuStrategy',
-        label: '目标地点',
-        type: 'stringArray',
+        key: 'crushBlessing',
+        label: '手动碾压祝福',
+        type: 'boolean',
         valueConfig: {
-            value: '村庄',
-            stringItems: [
-                '村庄',
-                '天庭',
-                '炼狱',
-                '蓬莱',
-                '极北',
-                '仙盟',
-                '联盟',
-                '活动面板',
-            ],
-            rememberInputValue: true,
+            value: false,
         },
     }),
 ]
@@ -634,7 +676,7 @@ const scriptVars = [
     ...qtList,
     ...configList,
     ...otherTabList,
-]
+].flat()
 const baseVars = [
     {
         name: 'startSlot',

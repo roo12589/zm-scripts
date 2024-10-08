@@ -3,6 +3,7 @@ interface Script {
     gap: number
     order?: number
     tab?: string
+    configList?: CustomConfig[]
 }
 /**
  * 规定的的脚本配置信息，即需要的完整变量格式
@@ -29,7 +30,7 @@ interface ConfigOption extends Option {
         syncValueOnChange?: boolean
         number?: number
         selectItems?: number[]
-        value?: string|boolean
+        value?: string | boolean
         stringItems?: string[]
         // string?: string
         rememberInputValue?: boolean
