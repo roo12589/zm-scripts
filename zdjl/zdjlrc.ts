@@ -64,6 +64,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '天选阁', gap: 0, order: 0 },
             { name: '灵物空战', gap: 0, order: 0 },
             { name: '炼狱黄泉路', gap: 0, order: 10 },
+            { name: '妖域', gap: 0, order: 20 },
         ],
     },
     _hd: {
@@ -88,6 +89,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             // { name: '捕虫领取', gap: 1, order: 100 },
              { name: '青龙秘境', gap: 1, order: 1000 },
              { name: '龙虎领取', gap: 1, order: 100 },
+             { name: '御剑', gap: 1, order: 50 },
             // { name: '天降领取', gap: 1, order: 100 },
             // { name: '寻宝领取', gap: 1, order: 100 },
             // { name: '印章兑换', gap: 1, order: 1000 },
@@ -159,7 +161,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
                     {
                         key: 'yunyouSlot',
                         label: '云游槽位',
-                        type: 'numberArray',
+                        type: 'numberArray' as 'numberArray',
                         valueConfig: {
                             number: 2,
                             selectItems: [1, 2, 3],
@@ -172,10 +174,10 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '仙女消费', gap: 0, order: 998 },
             { name: '领取邮件', gap: 0, order: 1000 },
             { name: '真灵装备', gap: 0, order: 999 },
+            { name: '天庭碾压', gap: 1, order: 1000 },
             { name: '极北出售', gap: 0, order: 99 },
             { name: '龙宫', gap: 0, order: 100 },
             { name: '决斗场', gap: 1, order: 1000 },
-            { name: '天庭碾压', gap: 1, order: 1000 },
         ].map((sc) => ({ ...sc, tab: 'fzTab' })),
     },
 }
