@@ -173,9 +173,9 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
                 ],
             },
             { name: '联盟悬赏辅助', gap: 0, order: 0 },
-            { name: '仙女消费', gap: 0, order: 998 },
-            { name: '领取邮件', gap: 0, order: 1000 },
-            { name: '真灵装备', gap: 0, order: 999 },
+            { name: '仙女消费', gap: 0, order: 9998 },
+            { name: '领取邮件', gap: 0, order: 10000 },
+            { name: '真灵装备', gap: 0, order: 9999 },
             { name: '天庭碾压', gap: 1, order: 1000 },
             { name: '极北出售', gap: 0, order: 99 },
             { name: '龙宫', gap: 0, order: 100 },
@@ -666,6 +666,19 @@ const _configList = [
         type: 'boolean',
         valueConfig: {
             value: false,
+        },
+    }),
+    computedConfigOption({
+        key: 'blessIndex1',
+        label: '天庭祝福',
+        type: 'numberArray' as 'numberArray',
+        valueConfig: {
+            number: 2,
+            selectItems: [
+                undefined,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+            ] as any,
+            showInputWidthBasis: '25%',
+            rememberInputValue: true,
         },
     }),
 ]
