@@ -71,8 +71,8 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     _hd: {
         name: '活动：',
         list: [
-           { name: '活跃兑换', gap: 1, order: 100 },
-           { name: '机缘令兑换', gap: 1, order: 100 },
+            { name: '活跃兑换', gap: 1, order: 100 },
+            { name: '机缘令兑换', gap: 1, order: 100 },
             // { name: '见缝插针', gap: 1, order: 100 },
             // { name: '灵能', gap: 0.5, order: 1000 },
 
@@ -87,17 +87,17 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             //      { name: '海钓礼包', gap: 1, order: 1002 },
             //     { name: '海钓交换', gap: 1, order: 1001 },
             // { name: '海钓领取', gap: 1, order: 1000 },
- 
+
             // { name: '捕虫领取', gap: 1, order: 100 },
             { name: '青龙秘境', gap: 1, order: 1000 },
             { name: '龙虎领取', gap: 1, order: 100 },
             { name: '御剑', gap: 1, order: 50 },
-             { name: '龙宫', gap: 0.5, order: 11 },
-             { name: '天降领取', gap: 0.5, order: 10 },
+            { name: '龙宫', gap: 0.5, order: 11 },
+            { name: '天降领取', gap: 0.5, order: 10 },
             // { name: '寻宝领取', gap: 1, order: 100 },
             // { name: '印章兑换', gap: 1, order: 1000 },
-             { name: '青龙交换', gap: 1, order: 1000 },
-             { name: '青龙领取', gap: 1, order: 10 },
+            { name: '青龙交换', gap: 1, order: 1000 },
+            { name: '青龙领取', gap: 1, order: 10 },
             // { name: '多关卡v2', gap: 0.5, order: 10000 },
             //  { name: '熔炉领取', gap: 1, order: 110 },
             // { name: '移形白嫖', gap: 1, order: 100 },
@@ -673,12 +673,12 @@ const _configList = [
         label: '天庭祝福',
         type: 'numberArray' as 'numberArray',
         valueConfig: {
-            number: 2,
+            number: 0,
             selectItems: [
-                undefined,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-            ] as any,
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+            ],
             showInputWidthBasis: '25%',
-            rememberInputValue: true,
+            // rememberInputValue: true,
         },
     }),
 ]
@@ -754,10 +754,10 @@ const baseVars = [
             varType: 'string',
             varScope: 'script',
             showInput: true,
-            showInputLabel: '读取配置',
+            showInputLabel: '配置',
             mustInput: true,
             rememberInputValue: true,
-            showInputWidthBasis: 'auto',
+            showInputWidthBasis: '70%',
             syncValueOnChange: true,
             __vars: {
                 stringItems: {
@@ -827,16 +827,16 @@ const baseVars = [
                                     varType: 'string',
                                     varScope: 'script',
                                     showInput: true,
-                                    showInputLabel: '替代项 未完成',
+                                    showInputLabel: '替代项',
                                     mustInput: true,
                                     rememberInputValue: true,
-                                    showInputWidthBasis: '50%',
+                                    showInputWidthBasis: 'auto',
                                     syncValueOnChange: true,
                                     __vars: {
                                         stringItems: {
                                             varType: 'expression',
                                             valueExp:
-                                                "Object.keys(zdjl.getStorage('userConfigMap') || {'否':{}})",
+                                                "['手动输入', ...Object.keys(zdjl.getStorage('userConfigMap'))]",
                                         },
                                     },
                                 },
@@ -863,7 +863,7 @@ const baseVars = [
                                     action: {
                                         type: '运行JS代码',
                                         delayUnit: 1,
-                                        jsCode: 'console.warn(\'保存配置\')\r\nconst scriptVars = zdjl.getVars()\r\nconst globalVars = zdjl.getVars(\'global\')\r\nlet saveUserConfigName = zdjl.getVar(\'saveUserConfigName\') || \'默认\'\r\nlet curUserConfig = {\r\n    scriptVars,\r\n    globalVars,\r\n}\r\nlet userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\nuserConfigMap[saveUserConfigName] = curUserConfig\r\n\r\nzdjl.setStorage(\'userConfigMap\', userConfigMap)\r\nzdjl.toast(`保存配置成功：${saveUserConfigName}`, 5000);\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
+                                        jsCode: 'console.warn(\'保存配置\')\r\nconst scriptVars = zdjl.getVars()\r\nconst globalVars = zdjl.getVars(\'global\')\r\nlet saveUserConfigName =        (zdjl.getVar(\'alternative\') === \'手动输入\'? zdjl.getVar(\'saveUserConfigName\') : zdjl.getVar(\'alternative\'))  || zdjl.getVar(\'saveUserConfigName\') || \'默认\'\r\nlet curUserConfig = {\r\n    scriptVars,\r\n    globalVars,\r\n}\r\nlet userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\nuserConfigMap[saveUserConfigName] = curUserConfig\r\n\r\nzdjl.setStorage(\'userConfigMap\', userConfigMap)\r\nzdjl.toast(`保存配置成功：${saveUserConfigName}`, 5000);\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
                                     },
                                     closeDialogOnAction: true,
                                     showInputWidthBasis: '50%',
@@ -881,7 +881,7 @@ const baseVars = [
                                     action: {
                                         type: '运行JS代码',
                                         delayUnit: 1,
-                                        jsCode: 'let userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\ndelete userConfigMap[saveUserConfigName]\r\n\r\nzdjl.setStorage(\'userConfigMap\', userConfigMap)\r\nconsole.log(\'warn-----\',zdjl.getStorage(\'userConfigMap\')[saveUserConfigName])\r\nzdjl.toast(`删除配置成功：${saveUserConfigName}`, 5000);\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
+                                        jsCode: "(function () {\\n    let userConfigMap = zdjl.getStorage('userConfigMap') || {}\\n    let cn =\\n        (zdjl.getVar('alternative') === '手动输入'\\n            ? zdjl.getVar('saveUserConfigName')\\n            : zdjl.getVar('alternative')) ||\\n        zdjl.getVar('curUserConfigName') ||\\n        '默认'\\n    delete userConfigMap[cn]\\n\\n    zdjl.setStorage('userConfigMap', userConfigMap)\\n    console.log('warn-----', zdjl.getStorage('userConfigMap')[cn])\\n    zdjl.toast('删除配置成功：'+cn, 5000)\\n    zdjl.runAction({\\n        type: '控制执行',\\n        delay: '0',\\n        delayUnit: 1,\\n        controlRunType: 'jumpTo',\\n        jumpToPosition: '-0',\\n        ContinueParentExecute: false,\\n    })\\n})()\\n",
                                     },
                                     closeDialogOnAction: true,
                                     showInputWidthBasis: '50%',
@@ -905,7 +905,8 @@ const baseVars = [
                                 },
                             },
                         ],
-                        dialogOKText: '勿点无用',
+                        dialogOKText: 'none',
+                        dialogCancelText: '确定',
                     },
                 ],
             },
