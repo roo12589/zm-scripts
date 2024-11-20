@@ -28,7 +28,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
         name: '日常：',
         list: [
             { name: '日常活跃1000', gap: 1, order: 0 },
-            { name: '日常爬山v2', gap: 1, order: 0 },
+            { name: '日常爬山v2', gap: 1, order: 10000 },
 
             {
                 name: '一键碾压',
@@ -49,7 +49,21 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             { name: '扫蛋', gap: 1, order: 100 },
             { name: '极光天照', gap: 1, order: -100 },
             { name: '祝福', gap: 1, order: 100 },
-            { name: '混沌副本', gap: 1, order: 100 },
+            {
+                name: '混沌副本',
+                gap: 1,
+                order: 100,
+                configList: [
+                    {
+                        key: 'chaosPenglai',
+                        label: '混沌蓬莱',
+                        type: 'boolean',
+                        valueConfig: {
+                            value: false,
+                        },
+                    },
+                ],
+            },
         ],
     },
     _rc2: {
@@ -71,16 +85,16 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
     _hd: {
         name: '活动：',
         list: [
-            { name: '活跃兑换', gap: 1, order: 100 },
-            { name: '机缘令兑换', gap: 1, order: 100 },
+            // { name: '活跃兑换', gap: 1, order: 100 },
+            // { name: '机缘令兑换', gap: 1, order: 100 },
             // { name: '见缝插针', gap: 1, order: 100 },
             // { name: '灵能', gap: 0.5, order: 1000 },
 
             // { name: '进宝领取', gap: 1, order: 95 },
-            { name: '好运来', gap: 1, order: 102 },
-            { name: '大家发财', gap: 1, order: 102 },
-            { name: '分享', gap: 1, order: 999 },
-            { name: '招财进宝', gap: 1, order: 100 },
+            // { name: '好运来', gap: 1, order: 102 },
+            // { name: '大家发财', gap: 1, order: 102 },
+            // { name: '分享', gap: 1, order: 999 },
+            // { name: '招财进宝', gap: 1, order: 100 },
             // { name: '食粽果盘', gap: 1, order: 100 },
             // { name: '邪羊副本', gap: 1, order: 1 },
             // { name: '捕虫虫胶', gap: 1, order: 101 },
@@ -89,18 +103,18 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
             // { name: '海钓领取', gap: 1, order: 1000 },
 
             // { name: '捕虫领取', gap: 1, order: 100 },
-            { name: '青龙秘境', gap: 1, order: 1000 },
             { name: '龙虎领取', gap: 1, order: 100 },
-            { name: '御剑', gap: 1, order: 50 },
-            { name: '龙宫', gap: 0.5, order: 11 },
-            { name: '天降领取', gap: 0.5, order: 10 },
+            // { name: '御剑', gap: 1, order: 50 },
+            // { name: '龙宫', gap: 0.5, order: 11 },
+            // { name: '天降领取', gap: 0.5, order: 10 },
             // { name: '寻宝领取', gap: 1, order: 100 },
             // { name: '印章兑换', gap: 1, order: 1000 },
+            { name: '青龙秘境', gap: 1, order: 1000 },
             { name: '青龙交换', gap: 1, order: 1000 },
             { name: '青龙领取', gap: 1, order: 10 },
             // { name: '多关卡v2', gap: 0.5, order: 10000 },
             //  { name: '熔炉领取', gap: 1, order: 110 },
-            // { name: '移形白嫖', gap: 1, order: 100 },
+            { name: '移形白嫖', gap: 1, order: 100 },
             // { name: '扫除', gap: 1, order: 10 },
             // { name: '邪羊领取', gap: 1, order: 10 },
             // { name: '邪羊交换', gap: 1, order: 10 },
@@ -149,6 +163,7 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
                                 '仙盟',
                                 '联盟',
                                 '活动面板',
+                                '混沌军团',
                             ],
                             rememberInputValue: true,
                         },
