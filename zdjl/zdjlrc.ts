@@ -863,7 +863,24 @@ const baseVars = [
                                     action: {
                                         type: '运行JS代码',
                                         delayUnit: 1,
-                                        jsCode: 'console.warn(\'保存配置\')\r\nconst scriptVars = zdjl.getVars()\r\nconst globalVars = zdjl.getVars(\'global\')\r\nlet saveUserConfigName =        (zdjl.getVar(\'alternative\') === \'手动输入\'? zdjl.getVar(\'saveUserConfigName\') : zdjl.getVar(\'alternative\'))  || zdjl.getVar(\'saveUserConfigName\') || \'默认\'\r\nlet curUserConfig = {\r\n    scriptVars,\r\n    globalVars,\r\n}\r\nlet userConfigMap = zdjl.getStorage(\'userConfigMap\') || {}\r\nuserConfigMap[saveUserConfigName] = curUserConfig\r\n\r\nzdjl.setStorage(\'userConfigMap\', userConfigMap)\r\nzdjl.toast(`保存配置成功：${saveUserConfigName}`, 5000);\r\nzdjl.runAction({\r\n    "type": "控制执行",\r\n    "delay": "0",\r\n    "delayUnit": 1,\r\n    "controlRunType": "jumpTo",\r\n    "jumpToPosition": "-0",\r\n    "ContinueParentExecute": false\r\n})',
+                                        jsCode: `(function () {
+                                                const scriptVars = zdjl.getVars()
+                                                const globalVars = zdjl.getVars('global')
+                                                let saveUserConfigName =
+                                                    (zdjl.getVar('alternative') === '手动输入'
+                                                        ? zdjl.getVar('saveUserConfigName')
+                                                        : zdjl.getVar('alternative')) ||
+                                                    zdjl.getVar('saveUserConfigName') ||
+                                                    '默认'
+                                                let curUserConfig = {
+                                                    scriptVars,
+                                                    globalVars,
+                                                }
+                                                let userConfigMap: UserConfigMapObj = zdjl.getStorage('userConfigMap') || {}
+                                                userConfigMap[saveUserConfigName] = curUserConfig
+                                                console.log('set---userConfigMap', userConfigMap)
+                                                zdjl.setStorage('userConfigMap', userConfigMap)
+                                            })()`,
                                     },
                                     closeDialogOnAction: true,
                                     showInputWidthBasis: '50%',
@@ -881,7 +898,28 @@ const baseVars = [
                                     action: {
                                         type: '运行JS代码',
                                         delayUnit: 1,
-                                        jsCode: "(function () {\\n    let userConfigMap = zdjl.getStorage('userConfigMap') || {}\\n    let cn =\\n        (zdjl.getVar('alternative') === '手动输入'\\n            ? zdjl.getVar('saveUserConfigName')\\n            : zdjl.getVar('alternative')) ||\\n        zdjl.getVar('curUserConfigName') ||\\n        '默认'\\n    delete userConfigMap[cn]\\n\\n    zdjl.setStorage('userConfigMap', userConfigMap)\\n    console.log('warn-----', zdjl.getStorage('userConfigMap')[cn])\\n    zdjl.toast('删除配置成功：'+cn, 5000)\\n    zdjl.runAction({\\n        type: '控制执行',\\n        delay: '0',\\n        delayUnit: 1,\\n        controlRunType: 'jumpTo',\\n        jumpToPosition: '-0',\\n        ContinueParentExecute: false,\\n    })\\n})()\\n",
+                                        jsCode: `(function () {
+                                            let userConfigMap = zdjl.getStorage('userConfigMap') || {}
+                                            let cn =
+                                                (zdjl.getVar('alternative') === '手动输入'
+                                                    ? zdjl.getVar('saveUserConfigName')
+                                                    : zdjl.getVar('alternative')) ||
+                                                zdjl.getVar('curUserConfigName') ||
+                                                '默认'
+                                            delete userConfigMap[cn]
+
+                                            zdjl.setStorage('userConfigMap', userConfigMap)
+                                            console.log('warn-----', zdjl.getStorage('userConfigMap')[cn])
+                                            zdjl.toast('删除配置成功：'+cn, 5000)
+                                            zdjl.runAction({
+                                                type: '控制执行',
+                                                delay: '0',
+                                                delayUnit: 1,
+                                                controlRunType: 'jumpTo',
+                                                jumpToPosition: '-0',
+                                                ContinueParentExecute: false,
+                                            })
+                                            })()`,
                                     },
                                     closeDialogOnAction: true,
                                     showInputWidthBasis: '50%',
