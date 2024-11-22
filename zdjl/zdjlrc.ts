@@ -60,6 +60,13 @@ const scripts: Record<string, { name: string; list: Script[] }> = {
                         type: 'boolean',
                         valueConfig: {
                             value: false,
+                            __vars: {
+                                showInputHiddenView: {
+                                    varType: 'expression',
+                                    valueExp:
+                                        "!(curTab === 'mainTab'&&zdjl.getVar('混沌副本'))",
+                                },
+                            },
                         },
                     },
                 ],
@@ -247,13 +254,15 @@ function getScriptStatistics(sc: Script): ScriptStatistics {
         // console.log('scriptStatistic', scriptStatistic)
         // console.log('lastTime', lastTime)
         // console.log('lastDate', lastDate)
-        const differ =
+        let differ =
             new Date(
                 now.getFullYear(),
                 now.getMonth(),
                 now.getDate()
             ).valueOf() - lastDate.getTime()
-
+        if (new Date().getHours() < 6) {
+            differ = differ - 24 * 60 * 60 * 1000
+        }
         // text = `${currentTime}/${targetTime}次`
         if (gap <= 1) {
             res.type = 'daily'
@@ -460,7 +469,7 @@ const computedScriptOption = (sc: Script): Option | VarOption[] => {
                         sc.name +
                         "';let gap=" +
                         sc.gap +
-                        ";const statistics=zdjl.getStorage('statistics_2');if(statistics&&statistics[name]){const scriptStatistic=Object.keys(statistics[name]).sort();let lastTime=scriptStatistic[scriptStatistic.length-1];if(!lastTime)return'';let lastTimeStr=`${lastTime.slice(0,4)}-${lastTime.slice(4,6)}-${lastTime.slice(6,8)}`;const lastDate=new Date(lastTimeStr);lastDate.setHours(0,0,0,0);const now=new Date();console.log('scriptStatistic',scriptStatistic);console.log('lastTime',lastTime);console.log('lastDate',lastDate);const differ=new Date(now.getFullYear(),now.getMonth(),now.getDate())-lastDate.getTime();let color='#ffffff';let text;if(differ<24*60*60*1000){text='今天';}else if(differ<2*24*60*60*1000){text='昨天';}else if(differ<3*24*60*60*1000){text='前天';}else{text=differ/(24*60*60*1000)+'天前';}console.log(scriptStatistic,gap,gap*24*60*60*1000,differ);if(gap&&gap<1){color=zdjl.getVar('color_0');if(differ<24*60*60*1000){let targetTime=Math.floor(1/gap);let currentTime=statistics[name][lastTime]||0;text=`${currentTime}/${targetTime}次`;if(currentTime>=targetTime){color=zdjl.getVar('color_100');}}}if(gap&&gap>=1){if(differ<gap*24*60*60*1000){color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}if(gap===7){const Monday=getCurrentMonday();if(lastDate>=Monday){text='完成';color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}}}return`#MD<font color=${color}>${text}</font>`;}return'';})()",
+                        ";const statistics=zdjl.getStorage('statistics_2');if(statistics&&statistics[name]){const scriptStatistic=Object.keys(statistics[name]).sort();let lastTime=scriptStatistic[scriptStatistic.length-1];if(!lastTime)return'';let lastTimeStr=`${lastTime.slice(0,4)}-${lastTime.slice(4,6)}-${lastTime.slice(6,8)}`;const lastDate=new Date(lastTimeStr);lastDate.setHours(0,0,0,0);const now=new Date();console.log('scriptStatistic',scriptStatistic);console.log('lastTime',lastTime);console.log('lastDate',lastDate);let differ=new Date(now.getFullYear(),now.getMonth(),now.getDate())-lastDate.getTime();if(new Date().getHours() < 6){differ = differ - 24 * 60 * 60 * 1000};let color='#ffffff';let text;if(differ<24*60*60*1000){text='今天';}else if(differ<2*24*60*60*1000){text='昨天';}else if(differ<3*24*60*60*1000){text='前天';}else{text=differ/(24*60*60*1000)+'天前';}console.log(scriptStatistic,gap,gap*24*60*60*1000,differ);if(gap&&gap<1){color=zdjl.getVar('color_0');if(differ<24*60*60*1000){let targetTime=Math.floor(1/gap);let currentTime=statistics[name][lastTime]||0;text=`${currentTime}/${targetTime}次`;if(currentTime>=targetTime){color=zdjl.getVar('color_100');}}}if(gap&&gap>=1){if(differ<gap*24*60*60*1000){color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}if(gap===7){const Monday=getCurrentMonday();if(lastDate>=Monday){text='完成';color=zdjl.getVar('color_100');}else{color=zdjl.getVar('color_0');}}}return`#MD<font color=${color}>${text}</font>`;}return'';})()",
                 },
                 showInputHiddenView: {
                     varType: 'expression',
